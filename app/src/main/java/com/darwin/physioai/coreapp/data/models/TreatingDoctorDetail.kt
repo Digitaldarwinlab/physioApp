@@ -1,0 +1,31 @@
+package com.example.physioai.data.models
+
+data class TreatingDoctorDetail(
+    val Address_1: String,
+    val Address_2: String,
+    val Address_3: String,
+    val Doctor_type: Int,
+    val city: String,
+    val country: String,
+    val degree: String,
+    val end_date: String,
+    val expertise_1: String,
+    val expertise_2: String,
+    val expertise_3: String,
+    val facebook: String,
+    val first_name: String,
+    val gender: String,
+    val landline: String,
+    val last_name: String,
+    val linkedin: String,
+    val middle_name: String,
+    val mobile_no: String,
+    val pp_pm_id: Int,
+    val regd_no_1: String,
+    val regd_no_2: Any,
+    val roleId: Int,
+    val start_date: String,
+    val state: String,
+    val status_flag: Int,
+    val whatsapp_no: String
+)

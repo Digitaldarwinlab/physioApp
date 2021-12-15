@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/login">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Login"
+        android:label="Login"
+        tools:layout="@layout/login_fragment_fragment" >
+        <action
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/home" />
+        <action
+            android:id="@+id/action_login_to_forget"
+            app:destination="@id/forget" />
+    </fragment>
+    <fragment
+        android:id="@+id/home"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Home"
+        android:label="Home"
+        tools:layout="@layout/home_fragment" />
+    <fragment
+        android:id="@+id/schedule"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Schedule"
+        android:label="Schedule"
+        tools:layout="@layout/schedule_fragment" >
+        <action
+            android:id="@+id/action_schedule_to_instructionsFragment"
+            app:destination="@id/instructionsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Profile"
+        android:label="Profile"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profile_to_edit"
+            app:destination="@id/edit" />
+    </fragment>
+    <fragment
+        android:id="@+id/tutorials"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Tutorials"
+        android:label="Tutorials"
+        tools:layout="@layout/tutorials_fragment" />
+    <fragment
+        android:id="@+id/achievement"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Acheivement"
+        android:label="Acheivement"
+        tools:layout="@layout/acheivement_fragment" />
+    <fragment
+        android:id="@+id/forget"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.ForgetPassword"
+        android:label="Forget password"
+        tools:layout="@layout/forget_password_fragment" />
+    <fragment
+        android:id="@+id/edit"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.Edit"
+        android:label="Edit" >
+        <action
+            android:id="@+id/action_edit_to_profile"
+            app:destination="@id/profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/instructionsFragment"
+        android:name="com.darwin.physioai.coreapp.ui.fragments.InstructionsFragment"
+        android:label="instructions_fragment"
+        tools:layout="@layout/instructions_fragment" />
+</navigation>
