@@ -4,6 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.19427083333333334" />
+        <entry key="..\:/DarwinPhysioAi/app/src/main/res/layout/acheivement_fragment.xml" value="0.16197916666666667" />
+        <entry key="..\:/DarwinPhysioAi/app/src/main/res/layout/activity_after_stats.xml" value="0.16197916666666667" />
+        <entry key="..\:/DarwinPhysioAi/app/src/main/res/layout/custom_progress_layout.xml" value="0.16197916666666667" />
+        <entry key="..\:/DarwinPhysioAi/app/src/main/res/layout/home_fragment.xml" value="0.3333333333333333" />
+        <entry key="..\:/DarwinPhysioAi/app/src/main/res/layout/profile_fragment.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/bottomnavlay.xml" value="0.20092592592592592" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.20092592592592592" />
         <entry key="app/src/main/res/layout/acheivement_fragment.xml" value="0.28888888888888886" />
@@ -17,7 +22,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

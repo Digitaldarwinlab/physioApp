@@ -101,6 +101,8 @@ class Profile : Fragment(R.layout.profile_fragment) {
                             binding?.dob?.text = details.dob
                             binding?.email?.text = details.email
                             binding?.mobile?.text = details.mobile_no
+                            binding?.whatsapp?.text = details.whatsapp_no
+                            binding?.emergency?.text = details.emergence_contact.toString()
 
 //                            val args = Bundle()
 //                            args.putString("name", "${details.first_name} ${details.last_name}")

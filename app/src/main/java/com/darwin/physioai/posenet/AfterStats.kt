@@ -56,58 +56,58 @@ class AfterStats : AppCompatActivity() {
         setContentView(R.layout.activity_after_stats)
         getAllMinMAx()
 
-        Apicall()
+//        Apicall()
 
     }
 
-    private fun Apicall() {
-        val jsonobj = JsonObject()
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        jsonobj.addProperty("id", parsedInt)
-        viewModel.apply {
-            getstatsres(jsonobj)
-            stats.observe(this@AfterStats, androidx.lifecycle.Observer {
-                when (it) {
-                    is Resource.Success -> {
-                        progress.hideProgress()
-                        try {
-
-                        } catch (e: NullPointerException) {
-                            Toast.makeText(
-                                this@AfterStats,
-                                "oops..! Something went wrong.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                    is Resource.Failure ->{
-                        progress.hideProgress()
-                        Toast.makeText(this@AfterStats, "Failed.", Toast.LENGTH_SHORT).show()
-                    }
-                    is Resource.Loading ->{
-                        if(progress.mDialog?.isShowing == true){
-                            progress.hideProgress()
-                        }else{
-                            progress.showProgress(this@AfterStats)
-                        }
-                    }
-                }
-            })
-        }
-    }
+//    private fun Apicall() {
+//        val jsonobj = JsonObject()
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        jsonobj.addProperty("id", parsedInt)
+//        viewModel.apply {
+//            getstatsres(jsonobj)
+//            stats.observe(this@AfterStats, androidx.lifecycle.Observer {
+//                when (it) {
+//                    is Resource.Success -> {
+//                        progress.hideProgress()
+//                        try {
+//
+//                        } catch (e: NullPointerException) {
+//                            Toast.makeText(
+//                                this@AfterStats,
+//                                "oops..! Something went wrong.",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    }
+//                    is Resource.Failure ->{
+//                        progress.hideProgress()
+//                        Toast.makeText(this@AfterStats, "Failed.", Toast.LENGTH_SHORT).show()
+//                    }
+//                    is Resource.Loading ->{
+//                        if(progress.mDialog?.isShowing == true){
+//                            progress.hideProgress()
+//                        }else{
+//                            progress.showProgress(this@AfterStats)
+//                        }
+//                    }
+//                }
+//            })
+//        }
+//    }
 
     fun getAllMinMAx(){
         min = intent.getStringExtra("min")

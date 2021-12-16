@@ -1,4 +1,4 @@
-package com.example.physioai.data.models
+package com.darwin.physioai.coreapp.data.models
 
 data class AppointmentDetail(
     val allDay: Boolean?,

@@ -30,7 +30,7 @@
                 android:layout_marginTop="30dp"
                 android:background="@drawable/image" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -39,57 +39,119 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/name"
+                <TableLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/mulish_bold"
-                    android:text="Bishal Singh"
-                    android:textColor="@color/white"
-                    android:textSize="14dp" />
+                    android:layout_centerInParent="true">
 
-                <TextView
-                    android:id="@+id/dob"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="@font/mulish_medium"
-                    android:text="DOB : 1995/09/10"
-                    android:textColor="@color/white"
-                    android:textSize="12dp" />
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Name: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="Bishal Singh"
+                            android:id="@+id/name"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
 
-                <TextView
-                    android:id="@+id/bloodgrp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="@font/mulish_medium"
-                    android:text="Blood Group : O+"
-                    android:textColor="@color/white"
-                    android:textSize="12dp" />
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="DOB: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="1995/09/10"
+                            android:id="@+id/dob"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
 
-                <TextView
-                    android:id="@+id/mobile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="@font/mulish_medium"
-                    android:text="Mobile Num : 9807009217"
-                    android:textColor="@color/white"
-                    android:textSize="12dp" />
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Blood Group: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="O+"
+                            android:id="@+id/bloodgrp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
 
-                <TextView
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="@font/mulish_medium"
-                    android:text="Email: Bishal.singh.3572@gmail.com"
-                    android:textColor="@color/white"
-                    android:textSize="12dp" />
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Mobile No.: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="9807009217"
+                            android:id="@+id/mobile"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
 
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Email: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="Bishal.singh.3572@gmail.com"
+                            android:id="@+id/email"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
 
-            </LinearLayout>
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="WhatsApp No.: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="Number"
+                            android:id="@+id/whatsapp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Emergency No.: "
+                            android:textColor="@color/black"
+                            android:padding="3dip"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:text="Number"
+                            android:id="@+id/emergency"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:padding="3dip" />
+                    </TableRow>
+
+                </TableLayout>
+
+            </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout

@@ -21,6 +21,7 @@ import com.darwin.physioai.coreapp.utils.Constants
 import com.darwin.physioai.coreapp.utils.SessionManager
 import com.darwin.physioai.coreapp.data.Adapter.ExcerciseDetailsAdapter
 import com.darwin.physioai.coreapp.data.Adapter.TimeSlotAdapter
+import com.darwin.physioai.coreapp.data.models.VisitResponseItem
 import com.google.gson.JsonObject
 import com.vivekkaushik.datepicker.DatePickerTimeline
 import com.vivekkaushik.datepicker.OnDateSelectedListener
@@ -84,6 +85,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         binding = ScheduleFragmentBinding.bind(view)
         userid = sessionManager.getStringData(Constants.USER_ID).toString()
         episodeid = sessionManager.getStringData(Constants.EPISODE_ID).toString()
+
+        if(episodeid!!.isNotEmpty()) {
         parseIntEID = episodeid!!.toInt()
         Log.d("LogId", parseIntEID.toString())
 
@@ -94,16 +97,20 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         visitList = ArrayList<VisitResponseItem>()
         visitItems = ArrayList<VisitResponseItem>()
 
-        showVisits(userid!!)
         setupDatePickr()
+        } else {
+
+        }
 
     }
 
-    private fun showVisits(userid: String) {
+    private fun showVisits(userid: String, strdate: String) {
         parseInt = userid.toInt()
         Log.d("LogVisitUID", parseInt.toString())
+        Log.d("LogVisitDate", strdate)
         val jsonobj = JsonObject()
         jsonobj.addProperty("id", parseInt)
+        jsonobj.addProperty("date", strdate)
         viewModel.apply {
             getVisit(jsonobj)
             VisitRes.observe(viewLifecycleOwner){
@@ -150,6 +157,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         val m = month +1
         val dat = "$year-$m-$day"
         Apicall(parseIntEID!!, dat)
+        showVisits(userid!!, dat)
 
         val datePickerTimeline: DatePickerTimeline = binding.datePickerTimeline
         datePickerTimeline.setInitialDate(year,month,day)
@@ -168,6 +176,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                 val strdate = "$year-$m-$day"
                 flag = 0
                 Apicall(parseIntEID!!, strdate)
+                showVisits(userid!!, strdate)
             }
 
             override fun onDisabledDateSelected(

@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darwin.physioai.coreapp.data.models.VisitResponse
 import com.example.physioai.data.Repository.ScheduleRepository
 import com.example.physioai.data.models.PrescriptionResponse
 import com.example.physioai.data.models.ScheduleResponseX
-import com.example.physioai.data.models.VisitResponse
 import com.example.physioai.data.network.Resource
 import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel

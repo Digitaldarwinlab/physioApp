@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.darwin.physioai.coreapp.data.models.VisitResponseItem
 import com.darwin.physioai.databinding.VisitRecyclerViewBinding
-import com.example.physioai.data.models.VisitResponseItem
 
 class VisitAdapter(private val cont: Context, private val list: List<VisitResponseItem>) : RecyclerView.Adapter<VisitAdapter.ViewHolder>() {
 

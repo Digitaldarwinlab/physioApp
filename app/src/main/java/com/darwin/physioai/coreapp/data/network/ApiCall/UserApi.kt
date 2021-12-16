@@ -1,6 +1,7 @@
 package com.example.taskmotl.data.Network.ApiCall
 
 
+import com.darwin.physioai.coreapp.data.models.VisitResponse
 import com.example.physioai.data.models.*
 import com.google.gson.JsonObject
 import retrofit2.http.*
@@ -31,7 +32,7 @@ interface UserApi {
     @POST("api/patient-progress/")
     suspend fun getdata(@Body user: JsonObject?): AchievementResponse
 
-    @POST("api/patient_visit/")
+    @POST("api/patient_visit_mobile/")
     suspend fun getvisit(@Body user: JsonObject?): VisitResponse
 
     @POST("api/get_pres/")
