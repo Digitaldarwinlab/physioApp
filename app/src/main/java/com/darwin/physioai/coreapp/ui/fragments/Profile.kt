@@ -97,6 +97,7 @@ class Profile : Fragment(R.layout.profile_fragment) {
                             listprofile = listOf(it.value)
                             val details = listprofile[0]
                             binding?.name?.text = "${details.first_name} ${details.last_name}"
+
                             binding?.bloodgrp?.text = details.blood_group
                             binding?.dob?.text = details.dob
                             binding?.email?.text = details.email

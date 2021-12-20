@@ -205,7 +205,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/mulish_medium"
-                        android:text="Ref Dr Name :"
+                        android:text="Treating Dr Name :"
                         android:textSize="14dp"
                         android:textStyle="bold" />
 
@@ -233,7 +233,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/mulish_medium"
-                        android:text="Ref Dr Id :"
+                        android:text="Treating Dr Id :"
                         android:textSize="14dp"
                         android:textStyle="bold" />
 
@@ -346,6 +346,32 @@
 
                     <TextView
                         android:id="@+id/epi_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="@font/mulish_medium"
+                        android:text="NA"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/mulish_medium"
+                        android:text="Start Date :"
+                        android:textSize="14dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/start_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"

@@ -1,6 +1,7 @@
 package com.example.taskmotl.data.Network.ApiCall
 
 
+import com.darwin.physioai.coreapp.data.models.AIscreenResponse
 import com.darwin.physioai.coreapp.data.models.VisitResponse
 import com.example.physioai.data.models.*
 import com.google.gson.JsonObject
@@ -37,4 +38,7 @@ interface UserApi {
 
     @POST("api/get_pres/")
     suspend fun getpres(@Body user: JsonObject?): PrescriptionResponse
+
+    @POST("api/update_care_plan_mobile/")
+    suspend fun updatecp(@Body user: JsonObject?): AIscreenResponse
 }

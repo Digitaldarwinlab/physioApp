@@ -8,14 +8,16 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.darwin.physioai.R
+import com.darwin.physioai.coreapp.utils.Constants
+import com.darwin.physioai.coreapp.utils.SessionManager
 import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
 import com.example.physioai.data.models.DataXX
+import javax.inject.Inject
 
 class ExcerciseDetailsAdapter(
     private val cont: Context,
     private val list: List<DataXX>
 ) : RecyclerView.Adapter<ExcerciseDetailsAdapter.ViewHolder>() {
-
 
     override fun getItemCount(): Int {
         return list.size
@@ -41,6 +43,7 @@ class ExcerciseDetailsAdapter(
             val bundle: Bundle = Bundle().apply {
                 putString("exercise", user.name.toString())
                 putString("angle", user.angle_data[0].angle_name)
+                putString("pp_cp_id", user.pp_cp_id.toString())
             }
             Navigation.findNavController(it).navigate(R.id.action_schedule_to_instructionsFragment, bundle)
         }

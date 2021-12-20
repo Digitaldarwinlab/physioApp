@@ -3,6 +3,7 @@ package com.example.physioai.data.models
 data class HomeResponseItem(
     val PP_Patient_Details: String,
     val PP_Patient_Details_mobile: PPPatientDetailsMobile,
+    val start_date: String,
     val end_date: String,
     val episode_number: String,
     val pp_ed_id: Double,

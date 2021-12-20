@@ -1,6 +1,6 @@
 package com.darwin.physioai.coreapp.ui.fragments
 
-import android.annotation.SuppressLint
+ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,6 +44,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private val viewModel : ScheduleViewModel by viewModels<ScheduleViewModel>()
     private var userid : String? = null
     private var episodeid : String? = null
+    private var pat_name : String? = null
     private lateinit var list : ArrayList<TimeSlotMobileX>
     private lateinit var timelist : ArrayList<TimeSlotMobileX>
     private lateinit var exerciselist : ArrayList<DataXX>
@@ -85,6 +86,9 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         binding = ScheduleFragmentBinding.bind(view)
         userid = sessionManager.getStringData(Constants.USER_ID).toString()
         episodeid = sessionManager.getStringData(Constants.EPISODE_ID).toString()
+        pat_name = sessionManager.getStringData(Constants.PATIENT_NAME).toString()
+        Log.d("LogSchedulePatientName", pat_name.toString())
+        binding.name.text = pat_name
 
         if(episodeid!!.isNotEmpty()) {
         parseIntEID = episodeid!!.toInt()
@@ -96,7 +100,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 
         visitList = ArrayList<VisitResponseItem>()
         visitItems = ArrayList<VisitResponseItem>()
-
+//        showPrescription(userid!!)
         setupDatePickr()
         } else {
 
@@ -148,6 +152,44 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
             }
         }
     }
+
+//    private fun showPrescription(userid: String) {
+//        parseInt = userid.toInt()
+//        Log.d("LogVisitUID", parseInt.toString())
+//        val jsonobj = JsonObject()
+//        jsonobj.addProperty("id", parseInt)
+//        viewModel.apply {
+//            getPres(jsonobj)
+//            PresRes.observe(viewLifecycleOwner){
+//                when (it) {
+//                    is Resource.Success -> {
+//                        progress.hideProgress()
+//                        try {
+//                            binding.presDetails.text = it.value[0].medication_detail?.get(0)?.medicine_name
+//                            binding.otherDetailsValue.text = it.value[0].medication_detail?.get(0)?.instruction
+//                        } catch (e: NullPointerException) {
+//                            Toast.makeText(
+//                                requireActivity(),
+//                                "oops..! Something went wrong.",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    }
+//                    is Resource.Failure ->{
+//                        progress.hideProgress()
+//                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
+//                    }
+//                    is Resource.Loading ->{
+//                        if(progress.mDialog?.isShowing == true){
+//                            progress.hideProgress()
+//                        }else{
+//                            progress.showProgress(requireContext())
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun setupDatePickr() {
         val c = Calendar.getInstance()

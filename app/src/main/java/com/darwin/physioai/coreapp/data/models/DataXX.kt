@@ -5,6 +5,7 @@ data class DataXX(
     val Rom: RomX,
     val angle_data: List<AngleData>,
     val ex_em_id: Int,
+    val pp_cp_id: Int,
     val image_url: String,
     val name: String,
     val video_url: String

@@ -29,6 +29,7 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
     lateinit var progress : CShowProgress
     private var exercise : String? = null
     private var angle : String? = null
+    private var pp_cp_id : String? = null
     val url = "https://myphysio.digitaldarwin.in/"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +38,7 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
         sessionManager = SessionManager(requireContext())
 
         exercise = arguments?.getString("exercise").toString()
+        pp_cp_id = arguments?.getString("pp_cp_id").toString()
         angle = arguments?.getString("angle").toString()
         binding?.exerciseName?.text = exercise
         Apicall(exercise!!)
@@ -45,6 +47,7 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
             skip.setOnClickListener {
                 val myIntent = Intent(requireContext(), PoseNetActivity::class.java)
                 myIntent.putExtra("angle", angle)
+                myIntent.putExtra("pp_cp_id", pp_cp_id)
                 startActivity(myIntent)
             }
         }
@@ -62,6 +65,7 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
                         try {
                             val v = (url + it.value[0].video_path)
                             binding!!.instr.text = it.value[0].instruction1
+                            binding!!.instr2.text = it.value[0].instruction2
                             binding!!.videoview1.setVideoPath(v)
 
                             val mediaController = MediaController(requireContext())
