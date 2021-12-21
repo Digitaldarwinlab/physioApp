@@ -136,6 +136,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
                     }
                     is Resource.Failure ->{
                         progress.hideProgress()

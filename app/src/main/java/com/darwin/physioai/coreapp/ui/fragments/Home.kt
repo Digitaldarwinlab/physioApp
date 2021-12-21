@@ -264,8 +264,8 @@ class Home : Fragment(R.layout.home_fragment) {
 
             binding.startDate.text = dat.start_date
             binding.endDate.text = dat.end_date
-            binding.refDrName.text = dat.treating_doctor_detail[0].first_name
-            binding.refDrId.text = dat.treating_doctor_detail[0].pp_pm_id.toString()
+            binding.refDrName.text = dat.treating_doc_details_mobile.treating_doctor
+            binding.refDrId.text = dat.treating_doc_details_mobile.treating_doctor_id.toString()
         }
     }
 }
