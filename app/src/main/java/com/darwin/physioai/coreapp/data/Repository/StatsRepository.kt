@@ -11,6 +11,6 @@ import javax.inject.Inject
 class StatsRepository @Inject constructor(private val api: UserApi): SafeApiCall {
 
     suspend fun getstats(num: JsonObject) = safeApiCall {
-        api.getUserData(num)
+        api.updatecp(num)
     }
 }

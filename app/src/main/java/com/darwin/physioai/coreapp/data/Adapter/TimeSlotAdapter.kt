@@ -21,7 +21,7 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
     }
 
     interface OnItemClickInterface {
-        fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int)
+        fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int, time: String)
     }
 
     inner class ViewHolder(val binding: TimeSlotItemBinding): RecyclerView.ViewHolder(binding.root)
@@ -32,7 +32,7 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
         Log.d("LogList", user.data.toString())
 
         if (row_index == position){
-            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position)
+            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time)
         }
 
         if (row_index == position){
@@ -43,7 +43,7 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
 
         holder.binding.timelay.setOnClickListener {
             row_index = position;
-            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position)
+            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time)
             notifyDataSetChanged();
         }
 

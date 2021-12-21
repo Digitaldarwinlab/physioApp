@@ -271,7 +271,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                             timelist.clear()
                             exerciselist.clear()
                             setupTimeSlotRecycler(timelist)
-                            setupExcerciseRecycler(exerciselist)
+                            setupExcerciseRecycler(exerciselist, null)
                         }
                     }
                     is Resource.Failure ->{
@@ -310,15 +310,15 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         }
     }
 
-    private fun setupExcerciseRecycler(listimedate: List<DataXX>) {
+    private fun setupExcerciseRecycler(listimedate: List<DataXX>, time: String?) {
         binding.apply {
-            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate)
+            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate, time)
             recyclerV.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             recyclerV.adapter = exercisedetailsAdapter
         }
     }
 
-    override fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int) {
-        setupExcerciseRecycler(timeSlotMobile)
+    override fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int, time: String) {
+        setupExcerciseRecycler(timeSlotMobile, time)
     }
 }

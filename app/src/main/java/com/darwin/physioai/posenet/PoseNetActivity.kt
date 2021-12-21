@@ -48,15 +48,26 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     private val base: Long = 0
     var set_count : Int? = 0
 
+
     object Myvariables{
         var angle : String?= null
+        var excercise: String? = null
+        var pp_cp_id : String? = null
+        var time : String? = null
     }
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         Log.d(TAG, "onCreate")
         Myvariables.angle = intent.getStringExtra("angle")
+        Myvariables.excercise = intent.getStringExtra("exercise")
+        Myvariables.pp_cp_id = intent.getStringExtra("pp_cp_id")
+        Myvariables.time = intent.getStringExtra("time")
+
 
         if (savedInstanceState != null) {
             selectedModel = savedInstanceState.getString(STATE_SELECTED_MODEL, OBJECT_DETECTION)

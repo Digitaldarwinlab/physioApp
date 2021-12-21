@@ -4,10 +4,7 @@ package com.darwin.physioai.PoseNet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.text.TextUtils
 import android.util.Log
 import com.darwin.physioai.posenet.AfterStats
@@ -90,44 +87,19 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     //Calculating the Angle between two landmarks
     val righthipangle = getAngle(leftHip, rightHip, rightKnee)
     ringPaint.getTextBounds("$righthipangle", 0, "$righthipangle".length, bounds)
-    canvas.drawText(
-      "$righthipangle",
-      translateX(rightHip.position.x - (bounds.width() / 4)),
-      translateY(rightHip.position.y),
-      whitePaint
-    )
-    //canvas.drawCircle(translateX(rightHip.position.x - (bounds.width() / 2)), translateY(rightHip.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+    canvas.drawText("$righthipangle", translateX(rightHip.position.x - (bounds.width() / 4)), translateY(rightHip.position.y), whitePaint)
 
     val lefthipangle = getAngle(rightHip, leftHip, leftKnee)
-    canvas.drawText(
-      "$lefthipangle",
-      translateX(leftHip.position.x + (bounds.width())),
-      translateY(leftHip.position.y),
-      whitePaint
-    )
+    canvas.drawText("$lefthipangle", translateX(leftHip.position.x + (bounds.width())), translateY(leftHip.position.y), whitePaint)
     ringPaint.getTextBounds("$lefthipangle", 0, "$lefthipangle".length, bounds)
-    //canvas.drawCircle(translateX(leftHip.position.x + (bounds.width() / 2)), translateY(leftHip.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
 
     val rightkneeangle = getAngle(rightHip, rightKnee, rightAnkle)
-    canvas.drawText(
-      "$rightkneeangle",
-      translateX(rightKnee!!.position.x - (bounds.width() / 4)),
-      translateY(rightKnee.position.y),
-      whitePaint
-    )
+    canvas.drawText("$rightkneeangle", translateX(rightKnee!!.position.x - (bounds.width() / 4)), translateY(rightKnee.position.y), whitePaint)
     ringPaint.getTextBounds("$rightkneeangle", 0, "$rightkneeangle".length, bounds)
-    //canvas.drawCircle(translateX(rightKnee.position.x - (bounds.width() / 2)), translateY(rightKnee.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
 
     val leftkneeangle = getAngle(leftHip, leftKnee, leftAnkle)
-    canvas.drawText(
-      "$leftkneeangle",
-      translateX(leftKnee!!.position.x + (bounds.width())),
-      translateY(leftKnee.position.y),
-      whitePaint
-    )
+    canvas.drawText("$leftkneeangle", translateX(leftKnee!!.position.x + (bounds.width())), translateY(leftKnee.position.y), whitePaint)
     ringPaint.getTextBounds("$leftkneeangle", 0, "$leftkneeangle".length, bounds)
-    //canvas.drawCircle(translateX(leftKnee.position.x + (bounds.width() / 2)), translateY(leftKnee.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
 
     val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
     val currentDate = sdf.format(Date())
@@ -222,6 +194,14 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     Log.d("LogTagLeftElbow", leftshoulderAngle.toString())
     //canvas.drawCircle(translateX(leftShoulder.position.x + (bounds.width() / 2)), translateY(leftShoulder.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
 
+    val leftneckAngle = getAngleBasedonXY(leftShoulder.position.x, leftShoulder.position.y, shoulx, shouly, nose.position.x, nose.position.y)
+//    canvas.drawText("$leftshoulderAngle", translateX(leftShoulder.position.x + (bounds.width())), translateY(leftShoulder.position.y), whitePaint)
+//    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
+
+    val RightneckAngle = getAngleBasedonXY(rightShoulder.position.x, rightShoulder.position.y, shoulx, shouly, nose.position.x, nose.position.y)
+//    canvas.drawText("$leftshoulderAngle", translateX(leftShoulder.position.x + (bounds.width())), translateY(leftShoulder.position.y), whitePaint)
+//    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
+
     // Starting Position Logic
     var keyPointsCount = 0
 
@@ -232,7 +212,6 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
       keyPointsCount++
     }
 
-    Log.d("LogTagAngle23", PoseNetActivity.Myvariables.angle.toString())
     if (keyPointsCount >= 30) {
 
       replogic0(lefthipangle.toInt())
@@ -247,6 +226,8 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
       replogic9(rightAnkleAngle.toInt())
       replogic10(leftwristAngle.toInt())
       replogic11(rightwristAngle.toInt())
+      replogic12(leftneckAngle.toInt())
+      replogic13(RightneckAngle.toInt())
       //tts.speak("Great start Excercise", TextToSpeech.QUEUE_FLUSH, null, null)
       //Repitition Logic for Squat
 //      val count = OnFrame(nose!!)
@@ -334,6 +315,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     }
   }
 
+
   fun drawText(canvas: Canvas, text: String, line: Int) {
     if (TextUtils.isEmpty(text)) {
       return
@@ -343,6 +325,15 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
   private fun getAngle(firstPoint: PoseLandmark?, midPoint: PoseLandmark?, lastPoint: PoseLandmark?): Double {
     var result = Math.toDegrees(atan2(1.0 * lastPoint!!.position.y - midPoint!!.position.y, 1.0 * lastPoint.position.x - midPoint.position.x) - atan2(firstPoint!!.position.y - midPoint.position.y, firstPoint.position.x - midPoint.position.x))
+    result = abs(result) // Angle should never be negative
+    if (result > 180) {
+      result = 360.0 - result // Always get the acute representation of the angle
+    }
+    return String.format("%.2f", result).toDouble()
+  }
+
+  private fun getAngleBasedonXY(firstPointx: Float, firstPointy: Float, midPointx: Float, midPointy: Float, lastPointx: Float, lastPointy: Float): Double {
+    var result = Math.toDegrees(atan2(1.0 * lastPointy - midPointy, 1.0 * lastPointx - midPointx) - atan2(firstPointy - midPointy, firstPointx - midPointx))
     result = abs(result) // Angle should never be negative
     if (result > 180) {
       result = 360.0 - result // Always get the acute representation of the angle
@@ -541,7 +532,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     var setsDone10 = 0
     var trigger10 = 0
 
-    //rep logic value10
+    //rep logic value11
 
     var repsDone11 = 0
     var maxAng11 = 175
@@ -552,6 +543,30 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     var goal11 = 1
     var setsDone11 = 0
     var trigger11 = 0
+
+    //rep logic value12
+
+    var repsDone12 = 0
+    var maxAng12 = 175
+    var minAng12 = 0
+    var prev_angle12 = 0
+    var prev_dangle12 = 0
+    var first12 = true
+    var goal12 = 1
+    var setsDone12 = 0
+    var trigger12 = 0
+
+    //rep logic value13
+
+    var repsDone13 = 0
+    var maxAng13 = 175
+    var minAng13 = 0
+    var prev_angle13 = 0
+    var prev_dangle13 = 0
+    var first13 = true
+    var goal13 = 1
+    var setsDone13 = 0
+    var trigger13 = 0
 
     //flag
     var flagcount = 0
@@ -1213,6 +1228,112 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     Log.d("LogMaxAngle11", maxAng11.toString())
   }
 
+  fun replogic12(primaryangle12: Int) { // primary Angle logic
+
+    val minAmp12 = 30
+    var crossed12 = 0
+    val thresholdlocal12 = 0.8
+    val dangle12 = primaryangle12 - prev_angle12
+    trigger12 = 0
+
+    if (!first12) {
+      Log.d("logTagWork", "Working")
+      if (goal12 == 1 && dangle12 > 0 && primaryangle12 - minAng12 > minAmp12 * thresholdlocal12) {
+
+        var resdonelocal12 = 0
+        repsDone12 += 1;
+        var setcount12 = setsDone12
+        Log.d("LogTag12", setsDone12.toString())
+        val repcount12 = repsDone12
+
+//        PoseVariables.repcountFinal = repcount
+
+//        PoseVariables.repcountfinal = repcount.toString()
+//        Log.d("LogTag2", repcount.toString())
+
+        goal12 = -1;
+        crossed12 = 0;
+      }else if(goal12 ==-1 && dangle12 < 0 && maxAng12 - primaryangle12 > minAmp12 * thresholdlocal12){
+        goal12 = 1
+      }
+    }
+
+    if (dangle12 < 0 && prev_dangle12 >= 0 && prev_angle12 - minAng12 > minAmp12) {
+      maxAng12 = prev_angle12
+      trigger12 = 1
+      minAng12 = maxAng12
+
+    } else if (dangle12 > 0 && prev_dangle12 <= 0 && maxAng12 - prev_angle12 > minAmp12) {
+      minAng12 = prev_angle12
+      trigger12 = 2
+    }
+
+    first12 = false;
+    prev_angle12 = primaryangle12.toInt()
+    Log.d("LogTag3", prev_angle12.toString())
+
+    if (!first12){
+      prev_dangle5 = dangle12.toInt()
+      Log.d("LogTag12", prev_dangle12.toString())
+      updateExcersiseProgress()
+    }
+    Log.d("LogMinAngle12", minAng12.toString())
+    Log.d("LogMaxAngle12", maxAng12.toString())
+  }
+
+  fun replogic13(primaryangle13: Int) { // primary Angle logic
+
+    val minAmp13 = 30
+    var crossed13 = 0
+    val thresholdlocal13 = 0.8
+    val dangle13 = primaryangle13 - prev_angle13
+    trigger13 = 0
+
+    if (!first13) {
+      Log.d("logTagWork", "Working")
+      if (goal13 == 1 && dangle13 > 0 && primaryangle13 - minAng13 > minAmp13 * thresholdlocal13) {
+
+        var resdonelocal13 = 0
+        repsDone13 += 1;
+        var setcount13 = setsDone13
+        Log.d("LogTag13", setsDone13.toString())
+        val repcount13 = repsDone13
+
+//        PoseVariables.repcountFinal = repcount
+
+//        PoseVariables.repcountfinal = repcount.toString()
+//        Log.d("LogTag2", repcount.toString())
+
+        goal13 = -1;
+        crossed13 = 0;
+      }else if(goal13 ==-1 && dangle13 < 0 && maxAng13 - primaryangle13 > minAmp13 * thresholdlocal13){
+        goal13 = 1
+      }
+    }
+
+    if (dangle13 < 0 && prev_dangle13 >= 0 && prev_angle13 - minAng13 > minAmp13) {
+      maxAng13 = prev_angle13
+      trigger13 = 1
+      minAng13 = maxAng13
+
+    } else if (dangle13 > 0 && prev_dangle13 <= 0 && maxAng13 - prev_angle13 > minAmp13) {
+      minAng13 = prev_angle13
+      trigger13 = 2
+    }
+
+    first13 = false;
+    prev_angle13 = primaryangle13.toInt()
+    Log.d("LogTag3", prev_angle13.toString())
+
+    if (!first13){
+      prev_dangle5 = dangle13.toInt()
+      Log.d("LogTag13", prev_dangle13.toString())
+      updateExcersiseProgress()
+    }
+    Log.d("LogMinAngle13", minAng13.toString())
+    Log.d("LogMaxAngle13", maxAng13.toString())
+  }
+
 
   fun updateExcersiseProgress() {
     if (repsDone4 == 6) { //this come from database
@@ -1221,7 +1342,13 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 //        var setCount = setsDone
         if (flagcount == 0){
           flagcount++
+          val execer = variable.excercise.toString()
+          val pp_cp_id = variable.pp_cp_id.toString()
+          val time = variable.time.toString()
           val i = Intent(context, AfterStats::class.java).apply {
+            putExtra("exercise", execer)
+            putExtra("pp_cp_id", pp_cp_id)
+            putExtra("time", time)
             //LeftHip
             putExtra("min" , minAng.toString())
             putExtra("max", maxAng.toString())
@@ -1256,8 +1383,14 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
             putExtra("min10" , minAng10.toString())
             putExtra("max10", maxAng10.toString())
             //rightwrist
-            putExtra("min10" , minAng11.toString())
-            putExtra("max10", maxAng11.toString())
+            putExtra("min11" , minAng11.toString())
+            putExtra("max11", maxAng11.toString())
+            //leftneck
+            putExtra("min12" , minAng11.toString())
+            putExtra("max12", maxAng11.toString())
+            //rightneck
+            putExtra("min13" , minAng11.toString())
+            putExtra("max13", maxAng11.toString())
           }
           context.startActivity(i)
         }

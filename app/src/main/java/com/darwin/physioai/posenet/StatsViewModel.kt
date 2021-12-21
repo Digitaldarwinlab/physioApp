@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darwin.physioai.coreapp.data.models.AIscreenResponse
 import com.example.physioai.data.Repository.HomeRepository
 import com.example.physioai.data.Repository.StatsRepository
 import com.example.physioai.data.models.HomeResponse
@@ -17,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StatsViewModel @Inject constructor(private val repository: StatsRepository) : ViewModel() {
-    private val _stats: MutableLiveData<Resource<HomeResponse>> = MutableLiveData()
-    val stats: LiveData<Resource<HomeResponse>>
+    private val _stats: MutableLiveData<Resource<AIscreenResponse>> = MutableLiveData()
+    val stats: LiveData<Resource<AIscreenResponse>>
         get() = _stats
 
     fun getstatsres(num: JsonObject) = viewModelScope.launch {

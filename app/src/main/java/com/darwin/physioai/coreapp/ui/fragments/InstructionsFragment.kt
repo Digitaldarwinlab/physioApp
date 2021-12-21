@@ -30,6 +30,7 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
     private var exercise : String? = null
     private var angle : String? = null
     private var pp_cp_id : String? = null
+    private var time : String? = null
     val url = "https://myphysio.digitaldarwin.in/"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,6 +41,8 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
         exercise = arguments?.getString("exercise").toString()
         pp_cp_id = arguments?.getString("pp_cp_id").toString()
         angle = arguments?.getString("angle").toString()
+        time = arguments?.getString("time").toString()
+
         binding?.exerciseName?.text = exercise
         Apicall(exercise!!)
 
@@ -48,6 +51,8 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
                 val myIntent = Intent(requireContext(), PoseNetActivity::class.java)
                 myIntent.putExtra("angle", angle)
                 myIntent.putExtra("pp_cp_id", pp_cp_id)
+                myIntent.putExtra("exercise", exercise)
+                myIntent.putExtra("time", time)
                 startActivity(myIntent)
             }
         }
