@@ -8,8 +8,11 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.darwin.physioai.R
+import com.darwin.physioai.coreapp.ui.fragments.Schedule
 import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
 import com.example.physioai.data.models.DataXX
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ExcerciseDetailsAdapter(
     private val cont: Context,
@@ -35,7 +38,6 @@ class ExcerciseDetailsAdapter(
             .placeholder(R.drawable.ic_profile_my_team_img)
             .error(R.drawable.ic_profile_my_team_img)
             .into(holder.binding.exerciseimage)
-
 
         holder.binding.startexercise.setOnClickListener {
             val bundle: Bundle = Bundle().apply {

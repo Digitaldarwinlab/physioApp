@@ -85,6 +85,15 @@
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/visit_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/visit_details"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/visitRecycler"
                     android:layout_width="wrap_content"
@@ -139,7 +148,7 @@
                     android:background="@drawable/edittext_backgrounds"
                     android:padding="5dp"
                     android:text="  Other Details:"
-                    android:textColorHint="@color/black"
+                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <TextView

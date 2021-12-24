@@ -37,7 +37,7 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
     lateinit var sessionManager : SessionManager
     @Inject
     lateinit var progress : CShowProgress
-    private var userid : String? = null
+    private var episodeID : String? = null
     private var parseInt : Int? = null
     private var tutorialAdapter: TutorialsAdapter? = null
     private lateinit var list : ArrayList<DataXX>
@@ -73,18 +73,18 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = TutorialsFragmentBinding.bind(view)
-        userid = sessionManager.getStringData(Constants.USER_ID).toString()
-        parseInt = userid?.toInt()
+        episodeID = sessionManager.getStringData(Constants.EPISODE_ID).toString()
+        parseInt = episodeID?.toInt()
         list = ArrayList<DataXX>()
         items = ArrayList<DataXX>()
 
-        showExercises(userid!!, currentDate)
+        showExercises(parseInt!!, currentDate)
     }
 
-    private fun showExercises(userid: String, currentDate: String) {
+    private fun showExercises(parseInt: Int, currentDate: String) {
         Log.d("LogTutorialsDate", currentDate)
         val jsonobj = JsonObject()
-        jsonobj.addProperty("id", 30)
+        jsonobj.addProperty("id", parseInt)
         jsonobj.addProperty("date", currentDate)
         viewModel.apply {
             getScheduleRes(jsonobj)

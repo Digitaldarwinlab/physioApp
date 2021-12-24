@@ -1,6 +1,6 @@
 package com.darwin.physioai.coreapp.ui.fragments
 
- import android.annotation.SuppressLint
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -22,57 +22,65 @@ import com.darwin.physioai.coreapp.utils.SessionManager
 import com.darwin.physioai.coreapp.data.Adapter.ExcerciseDetailsAdapter
 import com.darwin.physioai.coreapp.data.Adapter.TimeSlotAdapter
 import com.darwin.physioai.coreapp.data.models.VisitResponseItem
+import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
 import com.google.gson.JsonObject
 import com.vivekkaushik.datepicker.DatePickerTimeline
 import com.vivekkaushik.datepicker.OnDateSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
-class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemClickInterface{
+class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemClickInterface {
 
     @Inject
-    lateinit var sessionManager : SessionManager
+    lateinit var sessionManager: SessionManager
+
     @Inject
-    lateinit var progress : CShowProgress
+    lateinit var progress: CShowProgress
     private lateinit var binding: ScheduleFragmentBinding
     private var backPressedOnce = false
-    private val viewModel : ScheduleViewModel by viewModels<ScheduleViewModel>()
-    private var userid : String? = null
-    private var episodeid : String? = null
-    private var pat_name : String? = null
-    private lateinit var list : ArrayList<TimeSlotMobileX>
-    private lateinit var timelist : ArrayList<TimeSlotMobileX>
-    private lateinit var exerciselist : ArrayList<DataXX>
-    private lateinit var visitList : ArrayList<VisitResponseItem>
-    private lateinit var visitItems : ArrayList<VisitResponseItem>
+    private val viewModel: ScheduleViewModel by viewModels<ScheduleViewModel>()
+    private var userid: String? = null
+    private var episodeid: String? = null
+    private var pat_name: String? = null
+    private lateinit var list: ArrayList<TimeSlotMobileX>
+    private lateinit var timelist: ArrayList<TimeSlotMobileX>
+    private lateinit var listpres: ArrayList<MedicationDetail>
+    private lateinit var exerciselist: ArrayList<DataXX>
+    private lateinit var visitList: ArrayList<VisitResponseItem>
+    private lateinit var visitItems: ArrayList<VisitResponseItem>
 
     private var timeSlotAdapter: TimeSlotAdapter? = null
     private var exercisedetailsAdapter: ExcerciseDetailsAdapter? = null
     private var visitAdapter: VisitAdapter? = null
-    private var parseInt : Int? = null
-    private var parseIntEID : Int? = null
+    private var parseInt: Int? = null
+    private var parseIntEID: Int? = null
     private var flag = 0
+
+    val sdf = SimpleDateFormat("yyyy-MM-dd")
+    private var currentDate: String = sdf.format(Date())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Toast.makeText(requireContext(), "Press BACK again to exit", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Press BACK again to exit", Toast.LENGTH_SHORT)
+                        .show()
 
-                    if (backPressedOnce){
+                    if (backPressedOnce) {
                         requireActivity().finish()
                         return
 
                     }
 
                     backPressedOnce = true
-                    lifecycleScope.launch{
+                    lifecycleScope.launch {
                         delay(2000)
                         backPressedOnce = false
                     }
@@ -90,18 +98,19 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         Log.d("LogSchedulePatientName", pat_name.toString())
         binding.name.text = pat_name
 
-        if(episodeid!!.isNotEmpty()) {
-        parseIntEID = episodeid!!.toInt()
-        Log.d("LogId", parseIntEID.toString())
+        if (episodeid!!.isNotEmpty()) {
+            parseIntEID = episodeid!!.toInt()
+            Log.d("LogId", parseIntEID.toString())
 
-        exerciselist = ArrayList<DataXX>()
-        list = ArrayList<TimeSlotMobileX>()
-        timelist = ArrayList<TimeSlotMobileX>()
+            exerciselist = ArrayList<DataXX>()
+            list = ArrayList<TimeSlotMobileX>()
+            timelist = ArrayList<TimeSlotMobileX>()
+            listpres = ArrayList<MedicationDetail>()
 
-        visitList = ArrayList<VisitResponseItem>()
-        visitItems = ArrayList<VisitResponseItem>()
-//        showPrescription(userid!!)
-        setupDatePickr()
+            visitList = ArrayList<VisitResponseItem>()
+            visitItems = ArrayList<VisitResponseItem>()
+            showPrescription(parseIntEID!!)
+            setupDatePickr()
         } else {
 
         }
@@ -117,7 +126,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         jsonobj.addProperty("date", strdate)
         viewModel.apply {
             getVisit(jsonobj)
-            VisitRes.observe(viewLifecycleOwner){
+            VisitRes.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
                         progress.hideProgress()
@@ -125,7 +134,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                             visitItems.clear()
                             visitList.clear()
                             visitList.addAll(it.value)
-                            for (i in visitList.indices){
+                            for (i in visitList.indices) {
                                 visitItems.add(it.value[i])
                             }
                             setupVisitRecycler(visitItems)
@@ -136,16 +145,15 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-
                     }
-                    is Resource.Failure ->{
+                    is Resource.Failure -> {
                         progress.hideProgress()
                         Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
                     }
-                    is Resource.Loading ->{
-                        if(progress.mDialog?.isShowing == true){
+                    is Resource.Loading -> {
+                        if (progress.mDialog?.isShowing == true) {
                             progress.hideProgress()
-                        }else{
+                        } else {
                             progress.showProgress(requireContext())
                         }
                     }
@@ -154,56 +162,62 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         }
     }
 
-//    private fun showPrescription(userid: String) {
-//        parseInt = userid.toInt()
-//        Log.d("LogVisitUID", parseInt.toString())
-//        val jsonobj = JsonObject()
-//        jsonobj.addProperty("id", parseInt)
-//        viewModel.apply {
-//            getPres(jsonobj)
-//            PresRes.observe(viewLifecycleOwner){
-//                when (it) {
-//                    is Resource.Success -> {
-//                        progress.hideProgress()
-//                        try {
-//                            binding.presDetails.text = it.value[0].medication_detail?.get(0)?.medicine_name
-//                            binding.otherDetailsValue.text = it.value[0].medication_detail?.get(0)?.instruction
-//                        } catch (e: NullPointerException) {
-//                            Toast.makeText(
-//                                requireActivity(),
-//                                "oops..! Something went wrong.",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
-//                    is Resource.Failure ->{
-//                        progress.hideProgress()
-//                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
-//                    }
-//                    is Resource.Loading ->{
-//                        if(progress.mDialog?.isShowing == true){
-//                            progress.hideProgress()
-//                        }else{
-//                            progress.showProgress(requireContext())
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun showPrescription(parseIntEID: Int) {
+        Log.d("LogVisitEID", parseIntEID.toString())
+        val jsonobj = JsonObject()
+        jsonobj.addProperty("id", parseIntEID)
+        viewModel.apply {
+            getPres(jsonobj)
+            PresRes.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Resource.Success -> {
+                        progress.hideProgress()
+                        try {
+                            if (it.value.isNotEmpty()) {
+                                listpres.addAll(it.value[0].medication_detail)
+                                Log.d("LogPres", listpres.toString())
+                                binding.presDetails.text = listpres[0].medicine_name
+                                binding.otherDetailsValue.text = listpres[0].instruction
+                            } else {
+                                binding.presDetails.text = "No Prescription!"
+                                binding.otherDetailsValue.text = "No Prescription!"
+                            }
+                        } catch (e: NullPointerException) {
+                            Toast.makeText(
+                                requireActivity(),
+                                "oops..! Something went wrong.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    is Resource.Failure -> {
+                        progress.hideProgress()
+                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> {
+                        if (progress.mDialog?.isShowing == true) {
+                            progress.hideProgress()
+                        } else {
+                            progress.showProgress(requireContext())
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun setupDatePickr() {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
-        val m = month +1
+        val m = month + 1
         val dat = "$year-$m-$day"
         Apicall(parseIntEID!!, dat)
         showVisits(userid!!, dat)
 
         val datePickerTimeline: DatePickerTimeline = binding.datePickerTimeline
-        datePickerTimeline.setInitialDate(year,month,day)
+        datePickerTimeline.setInitialDate(year, month, day)
         datePickerTimeline.setActiveDate(c)
 //        if (day>2){
 //            datePickerTimeline.setInitialDate(year,month,day-2)
@@ -215,7 +229,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         datePickerTimeline.setOnDateSelectedListener(object : OnDateSelectedListener {
 
             override fun onDateSelected(year: Int, month: Int, day: Int, dayOfWeek: Int) {
-                val m = month+1
+                val m = month + 1
                 val strdate = "$year-$m-$day"
                 flag = 0
                 Apicall(parseIntEID!!, strdate)
@@ -244,16 +258,16 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         jsonobj.addProperty("date", strdate)
         viewModel.apply {
             getScheduleRes(jsonobj)
-            ScheduleRes.observe(viewLifecycleOwner){
+            ScheduleRes.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
                         progress.hideProgress()
-                        if(!it.value.error){
+                        if (!it.value.error) {
                             try {
                                 timelist.clear()
                                 list.clear()
                                 list.addAll(it.value.time_slot_mobile)
-                                for (i in list.indices){
+                                for (i in list.indices) {
                                     timelist.add(it.value.time_slot_mobile[i])
                                 }
                                 setupTimeSlotRecycler(timelist)
@@ -264,10 +278,14 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        }else if(it.value.error){
-                            if (flag == 0){
+                        } else if (it.value.error) {
+                            if (flag == 0) {
                                 flag++
-                                Toast.makeText(requireContext(), it.value.message.toString(), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.value.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                             timelist.clear()
                             exerciselist.clear()
@@ -275,14 +293,14 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                             setupExcerciseRecycler(exerciselist, null)
                         }
                     }
-                    is Resource.Failure ->{
+                    is Resource.Failure -> {
                         progress.hideProgress()
                         Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
                     }
-                    is Resource.Loading ->{
-                        if(progress.mDialog?.isShowing == true){
+                    is Resource.Loading -> {
+                        if (progress.mDialog?.isShowing == true) {
                             progress.hideProgress()
-                        }else{
+                        } else {
                             progress.showProgress(requireContext())
                         }
                     }
@@ -295,7 +313,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private fun setupVisitRecycler(visitItems: ArrayList<VisitResponseItem>) {
         binding.apply {
             visitAdapter = VisitAdapter(requireContext(), visitItems)
-            visitRecycler.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            visitRecycler.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             visitRecycler.adapter = visitAdapter
             visitAdapter!!.notifyDataSetChanged()
         }
@@ -305,7 +324,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private fun setupTimeSlotRecycler(timelist: ArrayList<TimeSlotMobileX>) {
         binding.apply {
             timeSlotAdapter = TimeSlotAdapter(timelist, this@Schedule)
-            timings.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            timings.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             timings.adapter = timeSlotAdapter
             timeSlotAdapter!!.notifyDataSetChanged()
         }
@@ -313,8 +333,9 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 
     private fun setupExcerciseRecycler(listimedate: List<DataXX>, time: String?) {
         binding.apply {
-            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate, time)
-            recyclerV.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(), listimedate, time)
+            recyclerV.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             recyclerV.adapter = exercisedetailsAdapter
         }
     }
