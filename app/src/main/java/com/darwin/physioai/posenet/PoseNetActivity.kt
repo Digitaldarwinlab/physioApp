@@ -54,6 +54,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         var excercise: String? = null
         var pp_cp_id : String? = null
         var time : String? = null
+        var rep : String? = null
     }
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR1)
@@ -67,6 +68,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         Myvariables.excercise = intent.getStringExtra("exercise")
         Myvariables.pp_cp_id = intent.getStringExtra("pp_cp_id")
         Myvariables.time = intent.getStringExtra("time")
+        Myvariables.rep = intent.getStringExtra("rep")
 
 
         if (savedInstanceState != null) {

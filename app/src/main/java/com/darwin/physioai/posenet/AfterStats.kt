@@ -112,7 +112,7 @@ class AfterStats : AppCompatActivity() {
                         is Resource.Success -> {
                             progress.hideProgress()
                             try {
-                                binding?.statstext?.setText("Congratulations! Exercise Completed!")
+                                binding?.statstext?.text = "Congratulations! Exercise Completed!"
                                 Toast.makeText(this@AfterStats, it.value.message.toString(), Toast.LENGTH_SHORT).show()
                             } catch (e: NullPointerException) {
                                 Toast.makeText(

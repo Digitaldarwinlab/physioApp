@@ -11,7 +11,11 @@ import com.example.physioai.data.models.DataXX
 import com.example.physioai.data.models.TimeSlotMobileX
 
 
-class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onItemClickInterface: OnItemClickInterface) : RecyclerView.Adapter<TimeSlotAdapter.ViewHolder>() {
+class TimeSlotAdapter(
+    private val list: List<TimeSlotMobileX>,
+    private val b: Boolean,
+    private val onItemClickInterface: OnItemClickInterface
+) : RecyclerView.Adapter<TimeSlotAdapter.ViewHolder>() {
 
     var timedatalist :ArrayList<DataXX>? = null
     private var row_index : Int? = 0
@@ -21,7 +25,12 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
     }
 
     interface OnItemClickInterface {
-        fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int, time: String)
+        fun onLeadClicked(
+            timeSlotMobile: ArrayList<DataXX>,
+            position: Int,
+            time: String,
+            b: Boolean
+        )
     }
 
     inner class ViewHolder(val binding: TimeSlotItemBinding): RecyclerView.ViewHolder(binding.root)
@@ -32,7 +41,12 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
         Log.d("LogList", user.data.toString())
 
         if (row_index == position){
-            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time)
+            onItemClickInterface.onLeadClicked(
+                user.data as ArrayList<DataXX>,
+                position,
+                user.time,
+                b
+            )
         }
 
         if (row_index == position){
@@ -43,11 +57,9 @@ class TimeSlotAdapter(private val list: List<TimeSlotMobileX>, private val onIte
 
         holder.binding.timelay.setOnClickListener {
             row_index = position;
-            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time)
+            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time, b)
             notifyDataSetChanged();
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ViewHolder {

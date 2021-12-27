@@ -54,8 +54,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private var timeSlotAdapter: TimeSlotAdapter? = null
     private var exercisedetailsAdapter: ExcerciseDetailsAdapter? = null
     private var visitAdapter: VisitAdapter? = null
-    private var parseInt : Int? = null
     private var parseIntEID : Int? = null
+    private var parseInt : Int? = null
     private var flag = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +72,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                     }
 
                     backPressedOnce = true
+
                     lifecycleScope.launch{
                         delay(2000)
                         backPressedOnce = false
@@ -199,7 +200,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         val day = c.get(Calendar.DAY_OF_MONTH)
         val m = month +1
         val dat = "$year-$m-$day"
-        Apicall(parseIntEID!!, dat)
+        Apicall(parseIntEID!!, dat, true)
         showVisits(userid!!, dat)
 
         val datePickerTimeline: DatePickerTimeline = binding.datePickerTimeline
@@ -218,8 +219,13 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                 val m = month+1
                 val strdate = "$year-$m-$day"
                 flag = 0
-                Apicall(parseIntEID!!, strdate)
-                showVisits(userid!!, strdate)
+                if(strdate == dat){
+                    Apicall(parseIntEID!!, strdate, true)
+                }
+                else{
+                    Apicall(parseIntEID!!, strdate, false)
+                }
+//                showVisits(userid!!, strdate)
             }
 
             override fun onDisabledDateSelected(
@@ -237,7 +243,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 //        datePickerTimeline.deactivateDates(dates)
     }
 
-    private fun Apicall(parseIntEID: Int, strdate: String) {
+    private fun Apicall(parseIntEID: Int, strdate: String, b: Boolean) {
         val jsonobj = JsonObject()
         Log.d("LogDate", strdate.toString())
         jsonobj.addProperty("id", parseIntEID)
@@ -253,10 +259,11 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                                 timelist.clear()
                                 list.clear()
                                 list.addAll(it.value.time_slot_mobile)
+
                                 for (i in list.indices){
                                     timelist.add(it.value.time_slot_mobile[i])
                                 }
-                                setupTimeSlotRecycler(timelist)
+                                setupTimeSlotRecycler(timelist, b)
                             } catch (e: NullPointerException) {
                                 Toast.makeText(
                                     requireActivity(),
@@ -271,8 +278,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                             }
                             timelist.clear()
                             exerciselist.clear()
-                            setupTimeSlotRecycler(timelist)
-                            setupExcerciseRecycler(exerciselist, null)
+                            setupTimeSlotRecycler(timelist, b)
+                            setupExcerciseRecycler(exerciselist, null, b)
                         }
                     }
                     is Resource.Failure ->{
@@ -302,24 +309,29 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupTimeSlotRecycler(timelist: ArrayList<TimeSlotMobileX>) {
+    private fun setupTimeSlotRecycler(timelist: ArrayList<TimeSlotMobileX>, b: Boolean) {
         binding.apply {
-            timeSlotAdapter = TimeSlotAdapter(timelist, this@Schedule)
+            timeSlotAdapter = TimeSlotAdapter(timelist, b,this@Schedule)
             timings.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             timings.adapter = timeSlotAdapter
             timeSlotAdapter!!.notifyDataSetChanged()
         }
     }
 
-    private fun setupExcerciseRecycler(listimedate: List<DataXX>, time: String?) {
+    private fun setupExcerciseRecycler(listimedate: List<DataXX>, time: String?, b: Boolean) {
         binding.apply {
-            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate, time)
+            exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate, time, b)
             recyclerV.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             recyclerV.adapter = exercisedetailsAdapter
         }
     }
 
-    override fun onLeadClicked(timeSlotMobile: ArrayList<DataXX>, position: Int, time: String) {
-        setupExcerciseRecycler(timeSlotMobile, time)
+    override fun onLeadClicked(
+        timeSlotMobile: ArrayList<DataXX>,
+        position: Int,
+        time: String,
+        b: Boolean
+    ) {
+        setupExcerciseRecycler(timeSlotMobile, time, b)
     }
 }

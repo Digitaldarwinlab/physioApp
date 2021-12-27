@@ -1,6 +1,7 @@
 package com.darwin.physioai.coreapp.data.Adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,7 +15,8 @@ import com.example.physioai.data.models.DataXX
 class ExcerciseDetailsAdapter(
     private val cont: Context,
     private val list: List<DataXX>,
-    private val time: String? =null
+    private val time: String? = null,
+    private val b: Boolean
 ) : RecyclerView.Adapter<ExcerciseDetailsAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -37,12 +39,23 @@ class ExcerciseDetailsAdapter(
             .into(holder.binding.exerciseimage)
 
 
+
+
+        if (!b){
+            holder.binding.startexercise.isEnabled = false
+            holder.binding.startexercise.setBackgroundColor(Color.GRAY)
+        }else{
+            holder.binding.startexercise.isEnabled = true
+            holder.binding.startexercise.setBackgroundColor(Color.parseColor("#FF03DAC5"))
+        }
+
         holder.binding.startexercise.setOnClickListener {
             val bundle: Bundle = Bundle().apply {
                 putString("exercise", user.name.toString())
                 putString("angle", user.angle_data[0].angle_name)
                 putString("pp_cp_id", user.pp_cp_id.toString())
                 putString("time", time)
+                putString("rep", user.Rep.toString())
             }
             Navigation.findNavController(it).navigate(R.id.action_schedule_to_instructionsFragment, bundle)
         }
