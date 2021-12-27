@@ -111,26 +111,26 @@
             android:id="@+id/conf_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/location"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/location"
-            android:text="Video Conference Detail:"
+            android:text="Video Conference Join Button:"
             android:textColor="@color/black"
             android:textSize="17sp"
             android:textStyle="bold" />
 
-        <TextView
+        <Button
             android:id="@+id/conf_detailv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/locationv"
+            android:layout_below="@id/conf_detail"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/conf_detail"
+            android:layout_marginBottom="15dp"
+            android:backgroundTint="@color/teal_200"
             android:text="Information"
             android:textSize="17sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="15dp"/>
+            android:textStyle="bold" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

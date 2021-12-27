@@ -2,13 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.darwin.physioai">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-sdk
         android:minSdkVersion="19"
         android:targetSdkVersion="28" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:name=".coreapp.ui.MyApplication"
@@ -18,8 +23,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PhysioAi">
-
-        <activity android:name=".coreapp.ui.MainActivity"
+        <activity
+            android:name=".agora.Agora"
+            android:exported="false" />
+        <activity
+            android:name=".coreapp.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,13 +37,12 @@
         </activity>
 
         <meta-data
-            android:name=
-                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.foo.CastOptionsProvider" />
 
-        <activity android:name=".posenet.core.SettingsActivity"/>
-        <activity android:name=".posenet.AfterStats"/>
-        <activity android:name=".posenet.PoseNetActivity"/>
+        <activity android:name=".posenet.core.SettingsActivity" />
+        <activity android:name=".posenet.AfterStats" />
+        <activity android:name=".posenet.PoseNetActivity" />
     </application>
 
 </manifest>

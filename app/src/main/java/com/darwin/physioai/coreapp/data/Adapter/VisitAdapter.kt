@@ -1,9 +1,12 @@
 package com.darwin.physioai.coreapp.data.Adapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.darwin.physioai.R
 import com.darwin.physioai.coreapp.data.models.Data
 import com.darwin.physioai.databinding.VisitRecyclerViewBinding
 
@@ -23,6 +26,11 @@ class VisitAdapter(private val cont: Context, private val list: List<Data>) : Re
         holder.binding.durationv.text = user.appointment_detail?.duration
         holder.binding.confDetailv.text = user.video_link
         holder.binding.timev.text = user.appointment_detail?.start_time
+
+        holder.binding.confDetailv.setOnClickListener {
+
+            Navigation.findNavController(it).navigate(R.id.action_schedule_to_agora)
+        }
     }
 
     override fun getItemCount(): Int {
