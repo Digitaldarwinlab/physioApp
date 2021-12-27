@@ -1,6 +1,6 @@
 package com.darwin.physioai.coreapp.ui.fragments
 
- import android.annotation.SuppressLint
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -92,17 +92,17 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         binding.name.text = pat_name
 
         if(episodeid!!.isNotEmpty()) {
-        parseIntEID = episodeid!!.toInt()
-        Log.d("LogId", parseIntEID.toString())
+            parseIntEID = episodeid!!.toInt()
+            Log.d("LogId", parseIntEID.toString())
 
-        exerciselist = ArrayList<DataXX>()
-        list = ArrayList<TimeSlotMobileX>()
-        timelist = ArrayList<TimeSlotMobileX>()
+            exerciselist = ArrayList<DataXX>()
+            list = ArrayList<TimeSlotMobileX>()
+            timelist = ArrayList<TimeSlotMobileX>()
 
-        visitList = ArrayList<VisitResponseItem>()
-        visitItems = ArrayList<VisitResponseItem>()
+            visitList = ArrayList<VisitResponseItem>()
+            visitItems = ArrayList<VisitResponseItem>()
 //        showPrescription(userid!!)
-        setupDatePickr()
+            setupDatePickr()
         } else {
 
         }
