@@ -1480,7 +1480,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
   }
 
   fun calculateRepAndMinMax(repDoneForSelectedExcercise : Int ) {
-    if (repDoneForSelectedExcercise == 5) { //this come from database
+    if (repDoneForSelectedExcercise == 7) { //this come from database
       Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
 

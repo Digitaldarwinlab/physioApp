@@ -89,13 +89,14 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         userid = sessionManager.getStringData(Constants.USER_ID).toString()
         episodeid = sessionManager.getStringData(Constants.EPISODE_ID).toString()
 
-        if(episodeid!!.isNotEmpty()) {
+        if (episodeid!!.isNotEmpty()) {
             parseIntEID = episodeid!!.toInt()
             Log.d("LogId", parseIntEID.toString())
 
             exerciselist = ArrayList<DataXX>()
             list = ArrayList<TimeSlotMobileX>()
             timelist = ArrayList<TimeSlotMobileX>()
+            listpres = ArrayList<MedicationDetail>()
 
             visitList = ArrayList<Data>()
             visitItems = ArrayList<Data>()
@@ -244,7 +245,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                 else{
                     Apicall(parseIntEID!!, strdate, false)
                 }
-//                showVisits(userid!!, strdate)
+                showVisits(userid!!, strdate)
             }
 
             override fun onDisabledDateSelected(
@@ -321,7 +322,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private fun setupVisitRecycler(visitItems: ArrayList<Data>) {
         binding.apply {
             visitAdapter = VisitAdapter(requireContext(), visitItems)
-            visitRecycler.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            visitRecycler.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
             visitRecycler.adapter = visitAdapter
             visitAdapter!!.notifyDataSetChanged()
         }
