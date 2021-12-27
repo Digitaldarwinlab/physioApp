@@ -28,6 +28,11 @@
             </intent-filter>
         </activity>
 
+        <meta-data
+            android:name=
+                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.foo.CastOptionsProvider" />
+
         <activity android:name=".posenet.core.SettingsActivity"/>
         <activity android:name=".posenet.AfterStats"/>
         <activity android:name=".posenet.PoseNetActivity"/>

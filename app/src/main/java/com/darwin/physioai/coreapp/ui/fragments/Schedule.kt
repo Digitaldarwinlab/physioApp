@@ -21,8 +21,7 @@ import com.darwin.physioai.coreapp.utils.Constants
 import com.darwin.physioai.coreapp.utils.SessionManager
 import com.darwin.physioai.coreapp.data.Adapter.ExcerciseDetailsAdapter
 import com.darwin.physioai.coreapp.data.Adapter.TimeSlotAdapter
-import com.darwin.physioai.coreapp.data.models.VisitResponseItem
-import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
+import com.darwin.physioai.coreapp.data.models.Data
 import com.google.gson.JsonObject
 import com.vivekkaushik.datepicker.DatePickerTimeline
 import com.vivekkaushik.datepicker.OnDateSelectedListener
@@ -52,8 +51,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private lateinit var timelist: ArrayList<TimeSlotMobileX>
     private lateinit var listpres: ArrayList<MedicationDetail>
     private lateinit var exerciselist: ArrayList<DataXX>
-    private lateinit var visitList: ArrayList<VisitResponseItem>
-    private lateinit var visitItems: ArrayList<VisitResponseItem>
+    private lateinit var visitList: ArrayList<Data>
+    private lateinit var visitItems: ArrayList<Data>
 
     private var timeSlotAdapter: TimeSlotAdapter? = null
     private var exercisedetailsAdapter: ExcerciseDetailsAdapter? = null
@@ -94,9 +93,6 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         binding = ScheduleFragmentBinding.bind(view)
         userid = sessionManager.getStringData(Constants.USER_ID).toString()
         episodeid = sessionManager.getStringData(Constants.EPISODE_ID).toString()
-        pat_name = sessionManager.getStringData(Constants.PATIENT_NAME).toString()
-        Log.d("LogSchedulePatientName", pat_name.toString())
-        binding.name.text = pat_name
 
         if (episodeid!!.isNotEmpty()) {
             parseIntEID = episodeid!!.toInt()
@@ -107,8 +103,8 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
             timelist = ArrayList<TimeSlotMobileX>()
             listpres = ArrayList<MedicationDetail>()
 
-            visitList = ArrayList<VisitResponseItem>()
-            visitItems = ArrayList<VisitResponseItem>()
+            visitList = ArrayList<Data>()
+            visitItems = ArrayList<Data>()
             showPrescription(parseIntEID!!)
             setupDatePickr()
         } else {
@@ -130,20 +126,35 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                 when (it) {
                     is Resource.Success -> {
                         progress.hideProgress()
+                        if (!it.value.error) {
                         try {
                             visitItems.clear()
                             visitList.clear()
-                            visitList.addAll(it.value)
+                            visitList.addAll(it.value.data)
                             for (i in visitList.indices) {
-                                visitItems.add(it.value[i])
+                                visitItems.add(it.value.data[i])
                             }
                             setupVisitRecycler(visitItems)
+                            binding.visitStatus.text = ""
                         } catch (e: NullPointerException) {
                             Toast.makeText(
                                 requireActivity(),
                                 "oops..! Something went wrong.",
                                 Toast.LENGTH_SHORT
                             ).show()
+                        }
+                        } else if (it.value.error) {
+                            if (flag == 0) {
+                                flag++
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.value.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.visitStatus.text = "No Visits Today!"
+                            }
+                            visitItems.clear()
+                            setupVisitRecycler(visitItems)
                         }
                     }
                     is Resource.Failure -> {
@@ -310,7 +321,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupVisitRecycler(visitItems: ArrayList<VisitResponseItem>) {
+    private fun setupVisitRecycler(visitItems: ArrayList<Data>) {
         binding.apply {
             visitAdapter = VisitAdapter(requireContext(), visitItems)
             visitRecycler.layoutManager =
