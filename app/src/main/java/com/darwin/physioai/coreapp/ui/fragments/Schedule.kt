@@ -187,8 +187,9 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                             if (it.value.isNotEmpty()) {
                                 listpres.addAll(it.value[0].medication_detail)
                                 Log.d("LogPres", listpres.toString())
-                                binding.presDetails.text = listpres[0].medicine_name
-                                binding.otherDetailsValue.text = listpres[0].instruction
+                                val n = listpres.size
+                                binding.presDetails.text = listpres[n-1].medicine_name
+                                binding.otherDetailsValue.text = listpres[n-1].instruction
                             } else {
                                 binding.presDetails.text = "No Prescription!"
                                 binding.otherDetailsValue.text = "No Prescription!"

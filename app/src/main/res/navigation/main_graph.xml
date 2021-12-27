@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_schedule_to_instructionsFragment"
             app:destination="@id/instructionsFragment" />
+        <action
+            android:id="@+id/action_schedule_to_agora"
+            app:destination="@id/agora" />
     </fragment>
     <fragment
         android:id="@+id/profile"
@@ -68,4 +71,8 @@
         android:name="com.darwin.physioai.coreapp.ui.fragments.InstructionsFragment"
         android:label="instructions_fragment"
         tools:layout="@layout/instructions_fragment" />
+    <activity
+        android:id="@+id/agora"
+        android:name="com.darwin.physioai.agora.Agora"
+        android:label="Agora" />
 </navigation>

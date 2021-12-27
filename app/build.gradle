@@ -78,6 +78,9 @@ dependencies {
     def lottieVersion = "4.1.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
+    //Agora
+    implementation 'io.agora.rtc:full-sdk:3.5.2'
+
     //Third Party
     implementation 'com.vivekkaushik.datepicker:datePickerTimeline:0.0.4'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
