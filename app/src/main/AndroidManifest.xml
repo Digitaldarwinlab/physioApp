@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="28" />
 
     <application
         android:name=".coreapp.ui.MyApplication"
@@ -24,6 +27,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name=
+                "com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.foo.CastOptionsProvider" />
 
         <activity android:name=".posenet.core.SettingsActivity"/>
         <activity android:name=".posenet.AfterStats"/>

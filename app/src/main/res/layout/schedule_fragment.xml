@@ -23,144 +23,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/layout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/relative">
-
-                <ImageView
-                    android:id="@+id/imgvprofile"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/image" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_toRightOf="@id/imgvprofile"
-                    android:background="@drawable/relative"
-                    android:gravity="center"
-                    android:text="NAME"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txt_chlng"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/name"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="7dp"
-                    android:layout_toRightOf="@id/imgvprofile"
-                    android:background="@drawable/relative"
-                    android:text="Challenge Yourself today"
-                    android:textAlignment="center"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/visits"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <TextView
-                    android:id="@+id/visit_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Visit Details"
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/visitRecycler"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/visit_details"
-                    android:layout_marginTop="10dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/visit_recycler_view" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/layout2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/layout1"
-                android:background="@drawable/relative">
-
-                <TextView
-                    android:id="@+id/prescreptiondetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittext_backgrounds"
-                    android:padding="5dp"
-                    android:text="Prescription Details:"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/presDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@id/prescreptiondetails"
-                    android:padding="5dp"
-                    android:text="Information"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/otherdetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/prescreptiondetails"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/edittext_backgrounds"
-                    android:padding="5dp"
-                    android:text="  Other Details:"
-                    android:textColorHint="@color/black"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/otherDetailsValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/presDetails"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_toRightOf="@id/otherdetails"
-                    android:padding="5dp"
-                    android:text="Information"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="15dp">
 
                 <TextView
                     android:id="@+id/txt_thsc"
@@ -189,12 +56,48 @@
                     app:layout_constraintTop_toBottomOf="@+id/txt_thsc"
                     app:monthTextColor="@color/white" />
 
-<!--                <com.rudo.calendarhorizontal.HorizontalCalendarView-->
-<!--                    android:id="@+id/horizontalcalendarview"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"/>-->
+                <!--                <com.rudo.calendarhorizontal.HorizontalCalendarView-->
+                <!--                    android:id="@+id/horizontalcalendarview"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"/>-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/visits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/visit_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Visit Details"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/visit_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/visit_details"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/visitRecycler"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/visit_details"
+                    android:layout_marginTop="10dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/visit_recycler_view" />
+
+            </RelativeLayout>
+
 
             <!--        <RelativeLayout-->
             <!--            android:id="@+id/layout3"-->
@@ -274,6 +177,65 @@
                     tools:listitem="@layout/custom_layoutfor_calender_careplan" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/layout1"
+                android:background="@drawable/relative">
+
+                <TextView
+                    android:id="@+id/prescreptiondetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_backgrounds"
+                    android:padding="5dp"
+                    android:text="Prescription Details:"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/presDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/prescreptiondetails"
+                    android:padding="5dp"
+                    android:text="Information"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/otherdetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/prescreptiondetails"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/edittext_backgrounds"
+                    android:padding="5dp"
+                    android:text="  Other Details:"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/otherDetailsValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/presDetails"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@id/otherdetails"
+                    android:padding="5dp"
+                    android:text="Information"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
 
             <!--        <Button-->
             <!--            android:id="@+id/starte"-->

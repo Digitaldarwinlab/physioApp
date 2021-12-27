@@ -1,6 +1,6 @@
 package com.darwin.physioai.coreapp.data.models
 
-data class VisitResponseItem(
+data class Data(
     val appointment_detail: AppointmentDetail?,
     val created_by: Int?,
     val error: Boolean?,
