@@ -3,6 +3,7 @@ package com.darwin.physioai.coreapp.data.Adapter
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
@@ -39,8 +40,6 @@ class ExcerciseDetailsAdapter(
             .into(holder.binding.exerciseimage)
 
 
-
-
         if (!b){
             holder.binding.startexercise.isEnabled = false
             holder.binding.startexercise.setBackgroundColor(Color.GRAY)
@@ -52,7 +51,7 @@ class ExcerciseDetailsAdapter(
         holder.binding.startexercise.setOnClickListener {
             val bundle: Bundle = Bundle().apply {
                 putString("exercise", user.name.toString())
-                putString("angle", user.angle_data[0].angle_name)
+                putString("angle", user.angle_data[1].angle_name)
                 putString("pp_cp_id", user.pp_cp_id.toString())
                 putString("time", time)
                 putString("rep", user.Rep.toString())

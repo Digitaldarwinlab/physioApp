@@ -99,7 +99,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 
             visitList = ArrayList<Data>()
             visitItems = ArrayList<Data>()
-//        showPrescription(userid!!)
+            showPrescription(parseIntEID!!)
             setupDatePickr()
         } else {
 

@@ -1431,56 +1431,57 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
 
   fun updateExcersiseProgress() {
+    Log.d("LogAngleTest", variable.angle.toString())
     when {
-
-      variable.angle.equals("lefthip", false) -> {
+      variable.angle.equals("lefthip", true) -> {
         calculateRepAndMinMax(repsDone)
       }
-
-      variable.angle.equals("righthip", false) -> {
+      variable.angle.equals("righthip", true) -> {
         calculateRepAndMinMax(repsDone1)
       }
-      variable.angle.equals("leftshoulder", false) -> {
+      variable.angle.equals("leftshoulder", true) -> {
         calculateRepAndMinMax(repsDone2)
       }
-      variable.angle.equals("rightshoulder", false) -> {
+      variable.angle.equals("rightshoulder", true) -> {
         calculateRepAndMinMax(repsDone3)
       }
-      variable.angle.equals("leftknee", false) -> {
+      variable.angle.equals("leftknee", true) -> {
+        Log.d("LogTagLeftKnee", variable.angle.toString())
         calculateRepAndMinMax(repsDone4)
       }
-      variable.angle.equals("rightknee", false) -> {
+      variable.angle.equals("rightknee", true) -> {
         calculateRepAndMinMax(repsDone5)
       }
-      variable.angle.equals("rightelbow", false) -> {
+      variable.angle.equals("rightelbow", true) -> {
         calculateRepAndMinMax(repsDone6)
       }
-      variable.angle.equals("leftelbow", false) -> {
+      variable.angle.equals("leftelbow", true) -> {
         calculateRepAndMinMax(repsDone7)
       }
-      variable.angle.equals("leftankle", false) -> {
+      variable.angle.equals("leftankle", true) -> {
         calculateRepAndMinMax(repsDone8)
       }
-      variable.angle.equals("rightangle", false) -> {
+      variable.angle.equals("rightangle", true) -> {
         calculateRepAndMinMax(repsDone9)
       }
-      variable.angle.equals("leftwrist", false) -> {
+      variable.angle.equals("leftwrist", true) -> {
         calculateRepAndMinMax(repsDone10)
       }
-      variable.angle.equals("rightwrist", false) -> {
+      variable.angle.equals("rightwrist", true) -> {
         calculateRepAndMinMax(repsDone11)
       }
-      variable.angle.equals("leftneck", false) -> {
+      variable.angle.equals("leftneck", true) -> {
         calculateRepAndMinMax(repsDone12)
       }
-      variable.angle.equals("rightneck", false) -> {
+      variable.angle.equals("rightneck", true) -> {
         calculateRepAndMinMax(repsDone13)
       }
     }
   }
 
   fun calculateRepAndMinMax(repDoneForSelectedExcercise : Int ) {
-    if (repDoneForSelectedExcercise == variable.rep?.toInt()!! + 1) { //this come from database
+    if (repDoneForSelectedExcercise == 5) { //this come from database
+      Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
 
         flagcount++
