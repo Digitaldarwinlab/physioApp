@@ -94,7 +94,7 @@ class Agora : AppCompatActivity() {
         // By default, video is disabled, and you need to call enableVideo to start a video stream.
         mRtcEngine!!.enableVideo()
 
-        val localContainer = findViewById(R.id.local_video_view_container) as FrameLayout
+        val localContainer = findViewById<FrameLayout>(R.id.local_video_view_container2)
         // Call CreateRendererView to create a SurfaceView object and add it as a child to the FrameLayout.
         val localFrame = RtcEngine.CreateRendererView(baseContext)
         localContainer.addView(localFrame)
@@ -108,7 +108,7 @@ class Agora : AppCompatActivity() {
 
     // Kotlin
     private fun setupRemoteVideo(uid: Int) {
-        val remoteContainer = findViewById(R.id.remote_video_view_container) as FrameLayout
+        val remoteContainer = findViewById<FrameLayout>(R.id.remote_video_view_container)
 
         val remoteFrame = RtcEngine.CreateRendererView(baseContext)
         remoteFrame.setZOrderMediaOverlay(true)
@@ -150,7 +150,7 @@ class Agora : AppCompatActivity() {
         // Stops/Resumes sending the local video stream.
         mRtcEngine!!.muteLocalVideoStream(iv.isSelected)
 
-        val container = findViewById<FrameLayout>(R.id.local_video_view_container)
+        val container = findViewById<FrameLayout>(R.id.local_video_view_container2)
         val surfaceView = container.getChildAt(0) as SurfaceView
         surfaceView.setZOrderMediaOverlay(!iv.isSelected)
         surfaceView.visibility = if (iv.isSelected) View.GONE else View.VISIBLE
