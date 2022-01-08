@@ -108,7 +108,7 @@ class Agora : AppCompatActivity() {
 
     // Kotlin
     private fun setupRemoteVideo(uid: Int) {
-        val remoteContainer = findViewById<FrameLayout>(R.id.remote_video_view_container)
+        val remoteContainer = findViewById<FrameLayout>(R.id.remote_video_view_container2)
 
         val remoteFrame = RtcEngine.CreateRendererView(baseContext)
         remoteFrame.setZOrderMediaOverlay(true)

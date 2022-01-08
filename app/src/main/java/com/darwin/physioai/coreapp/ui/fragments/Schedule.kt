@@ -69,7 +69,6 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                     if (backPressedOnce){
                         requireActivity().finish()
                         return
-
                     }
 
                     backPressedOnce = true
@@ -108,65 +107,65 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 
     }
 
-//    private fun showVisits(userid: String, strdate: String) {
-//        parseInt = userid.toInt()
-//        Log.d("LogVisitUID", parseInt.toString())
-//        Log.d("LogVisitDate", strdate)
-//        val jsonobj = JsonObject()
-//        jsonobj.addProperty("id", parseInt)
-//        jsonobj.addProperty("date", strdate)
-//        viewModel.apply {
-//            getVisit(jsonobj)
-//            VisitRes.observe(viewLifecycleOwner) {
-//                when (it) {
-//                    is Resource.Success -> {
-//                        progress.hideProgress()
-//                        if (!it.value.error) {
-//                            try {
-//                                visitItems.clear()
-//                                visitList.clear()
-//                                visitList.addAll(it.value.data)
-//                                for (i in visitList.indices) {
-//                                    visitItems.add(it.value.data[i])
-//                                }
-//                                setupVisitRecycler(visitItems)
-//                                binding.visitStatus.text = ""
-//                            } catch (e: NullPointerException) {
-//                                Toast.makeText(
-//                                    requireActivity(),
-//                                    "oops..! Something went wrong.",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        } else if (it.value.error) {
-//                            if (flag == 0) {
-//                                flag++
-//                                Toast.makeText(
-//                                    requireContext(),
-//                                    it.value.message.toString(),
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                                binding.visitStatus.text = "No Visits Today!"
-//                            }
-//                            visitItems.clear()
-//                            setupVisitRecycler(visitItems)
-//                        }
-//                    }
-//                    is Resource.Failure -> {
-//                        progress.hideProgress()
-//                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
-//                    }
-//                    is Resource.Loading -> {
-//                        if (progress.mDialog?.isShowing == true) {
-//                            progress.hideProgress()
-//                        } else {
-//                            progress.showProgress(requireContext())
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun showVisits(userid: String, strdate: String) {
+        parseInt = userid.toInt()
+        Log.d("LogVisitUID", parseInt.toString())
+        Log.d("LogVisitDate", strdate)
+        val jsonobj = JsonObject()
+        jsonobj.addProperty("id", parseInt)
+        jsonobj.addProperty("date", strdate)
+        viewModel.apply {
+            getVisit(jsonobj)
+            VisitRes.observe(viewLifecycleOwner) {
+                when (it) {
+                    is Resource.Success -> {
+                        progress.hideProgress()
+                        if (!it.value.error) {
+                            try {
+                                visitItems.clear()
+                                visitList.clear()
+                                visitList.addAll(it.value.data)
+                                for (i in visitList.indices) {
+                                    visitItems.add(it.value.data[i])
+                                }
+                                setupVisitRecycler(visitItems)
+                                binding.visitStatus.text = ""
+                            } catch (e: NullPointerException) {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    "oops..! Something went wrong.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else if (it.value.error) {
+                            if (flag == 0) {
+                                flag++
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.value.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.visitStatus.text = "No Visits Today!"
+                            }
+                            visitItems.clear()
+                            setupVisitRecycler(visitItems)
+                        }
+                    }
+                    is Resource.Failure -> {
+                        progress.hideProgress()
+                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading -> {
+                        if (progress.mDialog?.isShowing == true) {
+                            progress.hideProgress()
+                        } else {
+                            progress.showProgress(requireContext())
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun showPrescription(parseIntEID: Int) {
         Log.d("LogVisitEID", parseIntEID.toString())
@@ -220,7 +219,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         val day = c.get(Calendar.DAY_OF_MONTH)
         val m = month +1
         val dat = "$year-$m-$day"
-        Apicall(parseIntEID!!, dat, true)
+//        Apicall(parseIntEID!!, dat, true)
 //        showVisits(userid!!, dat)
 
         val datePickerTimeline: DatePickerTimeline = binding.datePickerTimeline
@@ -239,13 +238,13 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                 val m = month+1
                 val strdate = "$year-$m-$day"
                 flag = 0
-                if(strdate == dat){
-                    Apicall(parseIntEID!!, strdate, true)
-                }
-                else{
-                    Apicall(parseIntEID!!, strdate, false)
-                }
-//                showVisits(userid!!, strdate)
+//                if(strdate == dat){
+//                    Apicall(parseIntEID!!, strdate, true)
+//                }
+//                else{
+//                    Apicall(parseIntEID!!, strdate, false)
+//                }
+                showVisits(userid!!, strdate)
             }
 
             override fun onDisabledDateSelected(
