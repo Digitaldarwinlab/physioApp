@@ -384,12 +384,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         }
     }
 
-    override fun onLeadClicked(
-        timeSlotMobile: ArrayList<DataX>,
-        position: Int,
-        time: String,
-        b: Boolean
-    ) {
+    override fun onLeadClicked(timeSlotMobile: ArrayList<DataX>, position: Int, time: String, b: Boolean) {
         setupExcerciseRecycler(timeSlotMobile, time, b)
     }
 }
