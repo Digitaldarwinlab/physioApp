@@ -220,9 +220,29 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
         val m = month +1
-        val dat = "$year-$m-$day"
-//        Apicall(parseIntEID!!, dat, true)
-//        showVisits(userid!!, dat)
+        val zero = 0
+        var mon = ""
+        var d = ""
+
+        if (m in 1..9) {
+            mon = "$zero$m"
+        }else{
+            mon = m.toString()
+        }
+
+        if (day in 1..9) {
+            d = "$zero$day"
+        }else{
+            d = day.toString()
+        }
+
+        val dat = "$year-$mon-$d"
+        Log.d("LogTe", day.toString())
+        Log.d("LogTe", mon.toString())
+        Log.d("LogTed", d.toString())
+
+        Apicall(parseIntEID!!, dat, true)
+        showVisits(userid!!, dat)
 
         val datePickerTimeline: DatePickerTimeline = binding.datePickerTimeline
         datePickerTimeline.setInitialDate(year,month,day)
@@ -238,14 +258,30 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
 
             override fun onDateSelected(year: Int, month: Int, day: Int, dayOfWeek: Int) {
                 val m = month+1
-                val strdate = "$year-$m-$day"
+                val zero = 0
+                var mon = ""
+                var d = ""
+
+                if (m in 1..9) {
+                    mon = "$zero$m"
+                }else{
+                    mon = m.toString()
+                }
+
+                if (day in 1..9) {
+                    d = "$zero$day"
+                }else{
+                    d = day.toString()
+                }
+
+                val strdate = "$year-$mon-$d"
                 flag = 0
-//                if(strdate == dat){
-//                    Apicall(parseIntEID!!, strdate, true)
-//                }
-//                else{
-//                    Apicall(parseIntEID!!, strdate, false)
-//                }
+                if(strdate == dat){
+                    Apicall(parseIntEID!!, strdate, true)
+                }
+                else{
+                    Apicall(parseIntEID!!, strdate, false)
+                }
                 showVisits(userid!!, strdate)
             }
 

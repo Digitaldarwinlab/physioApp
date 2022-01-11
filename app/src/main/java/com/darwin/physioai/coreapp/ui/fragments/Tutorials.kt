@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.darwin.physioai.R
 import com.darwin.physioai.databinding.TutorialsFragmentBinding
 import com.darwin.physioai.coreapp.data.Adapter.TutorialsAdapter
+import com.darwin.physioai.coreapp.data.models.DataX
 import com.example.physioai.data.network.Resource
 import com.darwin.physioai.coreapp.utils.CShowProgress
 import com.darwin.physioai.coreapp.utils.Constants
@@ -39,8 +40,8 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
     private var episodeID : String? = null
     private var parseInt : Int? = null
     private var tutorialAdapter: TutorialsAdapter? = null
-    private lateinit var list : ArrayList<DataXX>
-    private lateinit var items : ArrayList<DataXX>
+    private lateinit var list : ArrayList<DataX>
+    private lateinit var items : ArrayList<DataX>
 
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     private var currentDate: String= sdf.format(Date())
@@ -74,8 +75,8 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
         binding = TutorialsFragmentBinding.bind(view)
         episodeID = sessionManager.getStringData(Constants.EPISODE_ID).toString()
         parseInt = episodeID?.toInt()
-        list = ArrayList<DataXX>()
-        items = ArrayList<DataXX>()
+        list = ArrayList<DataX>()
+        items = ArrayList<DataX>()
 
         showExercises(parseInt!!, currentDate)
     }
@@ -123,7 +124,7 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupTutorialRecycler(items: ArrayList<DataXX>) {
+    private fun setupTutorialRecycler(items: ArrayList<DataX>) {
         binding.apply {
             tutorialAdapter = TutorialsAdapter(requireContext(), items)
             showExercises.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)

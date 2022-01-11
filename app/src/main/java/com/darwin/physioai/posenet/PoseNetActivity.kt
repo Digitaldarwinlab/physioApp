@@ -41,7 +41,7 @@ import io.agora.rtc.video.VideoEncoderConfiguration
 import io.agora.rtc.video.VideoEncoderConfiguration.ORIENTATION_MODE
 import io.agora.rtc.video.VideoEncoderConfiguration.VideoDimensions
 import java.util.*
-import javax.script.ScriptEngine.ENGINE
+
 
 
 class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
@@ -123,8 +123,8 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         setContentView(com.darwin.physioai.R.layout.activity_posenet)
 
         previewView = findViewById(com.darwin.physioai.R.id.preview_view)
-        fl_local = findViewById<FrameLayout>(com.darwin.physioai.R.id.frame)
-        fl_remote = findViewById<FrameLayout>(com.darwin.physioai.R.id.remote_video_view_container2)
+//        fl_local = findViewById<FrameLayout>(com.darwin.physioai.R.id.frame)
+//        fl_remote = findViewById<FrameLayout>(com.darwin.physioai.R.id.remote_video_view_container2)
 
 //        if (checkSelfPermission(
 //                Manifest.permission.RECORD_AUDIO,
@@ -262,17 +262,17 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         imageProcessor?.run {
             this.stop()
         }
-        unbindVideoService();
-        TEXTUREVIEW = null;
-        /**leaveChannel and Destroy the RtcEngine instance*/
-        if (ENGINE != null) {
-            ENGINE.leaveChannel();
-        }
-        handler.post(RtcEngine::destroy);
-        ENGINE = null;
-        super.onDestroy();
-//        mRtcEngine?.leaveChannel()
-//        RtcEngine.destroy()
+//        unbindVideoService();
+//        TEXTUREVIEW = null;
+//        /**leaveChannel and Destroy the RtcEngine instance*/
+//        if (ENGINE != null) {
+//            ENGINE.leaveChannel();
+//        }
+//        handler.post(RtcEngine::destroy);
+//        ENGINE = null;
+//        super.onDestroy();
+////        mRtcEngine?.leaveChannel()
+////        RtcEngine.destroy()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -435,267 +435,267 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         }
     }
 
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === PROJECTION_REQ_CODE && resultCode === RESULT_OK) {
-            try {
-                val metrics = DisplayMetrics()
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics)
-                attr.data.putExtra(ExternalVideoInputManager.FLAG_SCREEN_WIDTH, metrics.widthPixels)
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_HEIGHT,
-                    metrics.heightPixels
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_DPI,
-                    metrics.density.toInt()
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_FRAME_RATE,
-                    DEFAULT_SHARE_FRAME_RATE
-                )
-                setVideoConfig(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    metrics.widthPixels,
-                    metrics.heightPixels
-                )
-                mService.setExternalVideoInput(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    attr.data
-                )
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun onClick(v: View) {
-        if (v.id == R.id.btn_join) {
-            if (!joined) {
-                CommonUtil.hideInputBoard(getActivity(), et_channel)
-
-                TEXTUREVIEW = TextureView(getContext())
-                // call when join button hit
-                val channelId = et_channel!!.text.toString()
-                // Check permission
-                if (AndPermission.hasPermissions(
-                        this,
-                        Permission.Group.STORAGE,
-                        Permission.Group.MICROPHONE,
-                        Permission.Group.CAMERA
-                    )
-                ) {
-                    joinChannel(channelId)
-                    return
-                }
-                // Request permission
-                AndPermission.with(this).runtime().permission(
-                    Permission.Group.STORAGE,
-                    Permission.Group.MICROPHONE,
-                    Permission.Group.CAMERA
-                ).onGranted { permissions ->
-                    // Permissions Granted
-                    joinChannel(channelId)
-                }.start()
-            } else {
-                joined = false
-                join!!.text = getString(R.string.join)
-                localVideo.setEnabled(false)
-                fl_local.removeAllViews()
-                javax.script.ScriptEngine.ENGINE.leaveChannel()
-                TEXTUREVIEW = null
-                unbindVideoService()
-            }
-        } else if (v.id == R.id.localVideo) {
-            try {
-                val intent = Intent()
-                setVideoConfig(
-                    ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
-                    LOCAL_VIDEO_WIDTH,
-                    LOCAL_VIDEO_HEIGHT
-                )
-                intent.putExtra(ExternalVideoInputManager.FLAG_VIDEO_PATH, mLocalVideoPath)
-                if (mService.setExternalVideoInput(
-                        ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
-                        intent
-                    )
-                ) {
-                    fl_local.removeAllViews()
-                    fl_local.addView(
-                        TEXTUREVIEW,
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
-                    )
-                }
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-        } else if (v.id == R.id.screenShare) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                /**remove local preview */
-                fl_local.removeAllViews()
-                /** */
-                val mpm =
-                    getContext().getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-                val intent = mpm.createScreenCaptureIntent()
-                startActivityForResult(intent, PROJECTION_REQ_CODE)
-            } else {
-                showAlert(getString(R.string.lowversiontip))
-            }
-        }
-    }
-
-    private fun checkLocalVideo(): Boolean {
-        val dir: File = getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        val videoFile = File(dir, VIDEO_NAME)
-        mLocalVideoPath = videoFile.getAbsolutePath()
-        mLocalVideoExists = videoFile.exists()
-        if (!mLocalVideoExists) {
-            showAlert(
-                java.lang.String.format(
-                    getString(R.string.alert_no_local_video_message),
-                    mLocalVideoPath
-                )
-            )
-        }
-        return mLocalVideoExists
-    }
-
-    private fun setVideoConfig(sourceType: Int, width: Int, height: Int) {
-        val mode: ORIENTATION_MODE
-        mode =
-            when (sourceType) {
-                ExternalVideoInputManager.TYPE_LOCAL_VIDEO, ExternalVideoInputManager.TYPE_SCREEN_SHARE -> ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
-                else -> ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
-            }
-        /**Setup video stream encoding configs */
-        javax.script.ScriptEngine.ENGINE.setVideoEncoderConfiguration(
-            VideoEncoderConfiguration(
-                VideoDimensions(width, height),
-                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
-                VideoEncoderConfiguration.STANDARD_BITRATE, mode
-            )
-        )
-    }
-
-    private fun joinChannel(channelId: String) {
-        // Check if the context is valid
-        val context: Context = getContext() ?: return
-
-        javax.script.ScriptEngine.ENGINE.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
-        /**Sets the role of a user (Live Broadcast only). */
-        javax.script.ScriptEngine.ENGINE.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
-
-        javax.script.ScriptEngine.ENGINE.enableVideo()
-
-        javax.script.ScriptEngine.ENGINE.setDefaultAudioRoutetoSpeakerphone(true)
-        javax.script.ScriptEngine.ENGINE.setEnableSpeakerphone(false)
-
-        var accessToken: String? = getString(R.string.agora_access_token)
-        if (TextUtils.equals(accessToken, "") || TextUtils.equals(
-                accessToken,
-                "<#YOUR ACCESS TOKEN#>"
-            )
-        ) {
-            accessToken = null
-        }
-
-        val res: Int = javax.script.ScriptEngine.ENGINE.joinChannel(
-            accessToken,
-            channelId,
-            "Extra Optional Data",
-            0
-        )
-        if (res != 0) {
-            // Usually happens with invalid parameters
-            // Error code description can be found at:
-            // en: https://docs.agora.io/en/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_error_code.html
-            // cn: https://docs.agora.io/cn/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_error_code.html
-            showAlert(RtcEngine.getErrorDescription(Math.abs(res)))
-            return
-        }
-        // Prevent repeated entry
-        join!!.isEnabled = false
-    }
-
-    private fun bindVideoService() {
-        val intent = Intent()
-        intent.setClass(getContext(), ExternalVideoInputService::class.java)
-        mServiceConnection = VideoInputServiceConnection()
-        getContext().bindService(intent, mServiceConnection, BIND_AUTO_CREATE)
-    }
-
-    private fun unbindVideoService() {
-        if (mServiceConnection != null) {
-            getContext().unbindService(mServiceConnection)
-            mServiceConnection = null
-        }
-    }
-
-    private class VideoInputServiceConnection : ServiceConnection {
-        override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
-            mService = iBinder as IExternalVideoInputService
-        }
-
-        override fun onServiceDisconnected(componentName: ComponentName) {
-            mService = null
-        }
-    }
-
-    private val iRtcEngineEventHandler: IRtcEngineEventHandler = object : IRtcEngineEventHandler() {
-
-        override fun onWarning(warn: Int) {
-            Log.w(
-                TAG,
-                String.format(
-                    "onWarning code %d message %s",
-                    warn,
-                    RtcEngine.getErrorDescription(warn)
-                )
-            )
-        }
-
-
-        override fun onError(err: Int) {
-            Log.e(
-                TAG,
-                String.format("onError code %d message %s", err, RtcEngine.getErrorDescription(err))
-            )
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode === PROJECTION_REQ_CODE && resultCode === RESULT_OK) {
+//            try {
+//                val metrics = DisplayMetrics()
+//                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics)
+//                attr.data.putExtra(ExternalVideoInputManager.FLAG_SCREEN_WIDTH, metrics.widthPixels)
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_SCREEN_HEIGHT,
+//                    metrics.heightPixels
+//                )
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_SCREEN_DPI,
+//                    metrics.density.toInt()
+//                )
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_FRAME_RATE,
+//                    DEFAULT_SHARE_FRAME_RATE
+//                )
+//                setVideoConfig(
+//                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
+//                    metrics.widthPixels,
+//                    metrics.heightPixels
+//                )
+//                mService.setExternalVideoInput(
+//                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
+//                    attr.data
+//                )
+//            } catch (e: RemoteException) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+//
+//    fun onClick(v: View) {
+//        if (v.id == R.id.btn_join) {
+//            if (!joined) {
+//                CommonUtil.hideInputBoard(getActivity(), et_channel)
+//
+//                TEXTUREVIEW = TextureView(getContext())
+//                // call when join button hit
+//                val channelId = et_channel!!.text.toString()
+//                // Check permission
+//                if (AndPermission.hasPermissions(
+//                        this,
+//                        Permission.Group.STORAGE,
+//                        Permission.Group.MICROPHONE,
+//                        Permission.Group.CAMERA
+//                    )
+//                ) {
+//                    joinChannel(channelId)
+//                    return
+//                }
+//                // Request permission
+//                AndPermission.with(this).runtime().permission(
+//                    Permission.Group.STORAGE,
+//                    Permission.Group.MICROPHONE,
+//                    Permission.Group.CAMERA
+//                ).onGranted { permissions ->
+//                    // Permissions Granted
+//                    joinChannel(channelId)
+//                }.start()
+//            } else {
+//                joined = false
+//                join!!.text = getString(R.string.join)
+//                localVideo.setEnabled(false)
+//                fl_local.removeAllViews()
+//                javax.script.ScriptEngine.ENGINE.leaveChannel()
+//                TEXTUREVIEW = null
+//                unbindVideoService()
+//            }
+//        } else if (v.id == R.id.localVideo) {
+//            try {
+//                val intent = Intent()
+//                setVideoConfig(
+//                    ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
+//                    LOCAL_VIDEO_WIDTH,
+//                    LOCAL_VIDEO_HEIGHT
+//                )
+//                intent.putExtra(ExternalVideoInputManager.FLAG_VIDEO_PATH, mLocalVideoPath)
+//                if (mService.setExternalVideoInput(
+//                        ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
+//                        intent
+//                    )
+//                ) {
+//                    fl_local.removeAllViews()
+//                    fl_local.addView(
+//                        TEXTUREVIEW,
+//                        RelativeLayout.LayoutParams.MATCH_PARENT,
+//                        RelativeLayout.LayoutParams.MATCH_PARENT
+//                    )
+//                }
+//            } catch (e: RemoteException) {
+//                e.printStackTrace()
+//            }
+//        } else if (v.id == R.id.screenShare) {
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+//                /**remove local preview */
+//                fl_local.removeAllViews()
+//                /** */
+//                val mpm =
+//                    getContext().getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+//                val intent = mpm.createScreenCaptureIntent()
+//                startActivityForResult(intent, PROJECTION_REQ_CODE)
+//            } else {
+//                showAlert(getString(R.string.lowversiontip))
+//            }
+//        }
+//    }
+//
+//    private fun checkLocalVideo(): Boolean {
+//        val dir: File = getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+//        val videoFile = File(dir, VIDEO_NAME)
+//        mLocalVideoPath = videoFile.getAbsolutePath()
+//        mLocalVideoExists = videoFile.exists()
+//        if (!mLocalVideoExists) {
 //            showAlert(
-//                String.format(
-//                    "onError code %d message %s",
-//                    err,
-//                    RtcEngine.getErrorDescription(err)
+//                java.lang.String.format(
+//                    getString(R.string.alert_no_local_video_message),
+//                    mLocalVideoPath
 //                )
 //            )
-        }
-
-        override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
-            Log.i(TAG, String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
-//            showLongToast(String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
-            myUid = uid
-            joined = true
-            handler.post {
-                join!!.isEnabled = true
-                join.text = getString(R.string.leave)
-                localVideo.setEnabled(mLocalVideoExists)
-                bindVideoService()
-            }
-        }
-        override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
-            super.onRemoteVideoStateChanged(uid, state, reason, elapsed)
-            Log.i(TAG, "onRemoteVideoStateChanged:uid->$uid, state->$state")
-        }
-
-        override fun onUserJoined(uid: Int, elapsed: Int) {
-            super.onUserJoined(uid, elapsed)
-            Log.i(TAG, "onUserJoined->$uid")
-//            showLongToast(String.format("user %d joined!", uid))
-        }
-        override fun onUserOffline(uid: Int, reason: Int) {
-            Log.i(TAG, String.format("user %d offline! reason:%d", uid, reason))
-
-        }
-    }
+//        }
+//        return mLocalVideoExists
+//    }
+//
+//    private fun setVideoConfig(sourceType: Int, width: Int, height: Int) {
+//        val mode: ORIENTATION_MODE
+//        mode =
+//            when (sourceType) {
+//                ExternalVideoInputManager.TYPE_LOCAL_VIDEO, ExternalVideoInputManager.TYPE_SCREEN_SHARE -> ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+//                else -> ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
+//            }
+//        /**Setup video stream encoding configs */
+//        javax.script.ScriptEngine.ENGINE.setVideoEncoderConfiguration(
+//            VideoEncoderConfiguration(
+//                VideoDimensions(width, height),
+//                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
+//                VideoEncoderConfiguration.STANDARD_BITRATE, mode
+//            )
+//        )
+//    }
+//
+//    private fun joinChannel(channelId: String) {
+//        // Check if the context is valid
+//        val context: Context = getContext() ?: return
+//
+//        javax.script.ScriptEngine.ENGINE.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
+//        /**Sets the role of a user (Live Broadcast only). */
+//        javax.script.ScriptEngine.ENGINE.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
+//
+//        javax.script.ScriptEngine.ENGINE.enableVideo()
+//
+//        javax.script.ScriptEngine.ENGINE.setDefaultAudioRoutetoSpeakerphone(true)
+//        javax.script.ScriptEngine.ENGINE.setEnableSpeakerphone(false)
+//
+//        var accessToken: String? = getString(R.string.agora_access_token)
+//        if (TextUtils.equals(accessToken, "") || TextUtils.equals(
+//                accessToken,
+//                "<#YOUR ACCESS TOKEN#>"
+//            )
+//        ) {
+//            accessToken = null
+//        }
+//
+//        val res: Int = javax.script.ScriptEngine.ENGINE.joinChannel(
+//            accessToken,
+//            channelId,
+//            "Extra Optional Data",
+//            0
+//        )
+//        if (res != 0) {
+//            // Usually happens with invalid parameters
+//            // Error code description can be found at:
+//            // en: https://docs.agora.io/en/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_error_code.html
+//            // cn: https://docs.agora.io/cn/Voice/API%20Reference/java/classio_1_1agora_1_1rtc_1_1_i_rtc_engine_event_handler_1_1_error_code.html
+//            showAlert(RtcEngine.getErrorDescription(Math.abs(res)))
+//            return
+//        }
+//        // Prevent repeated entry
+//        join!!.isEnabled = false
+//    }
+//
+//    private fun bindVideoService() {
+//        val intent = Intent()
+//        intent.setClass(getContext(), ExternalVideoInputService::class.java)
+//        mServiceConnection = VideoInputServiceConnection()
+//        getContext().bindService(intent, mServiceConnection, BIND_AUTO_CREATE)
+//    }
+//
+//    private fun unbindVideoService() {
+//        if (mServiceConnection != null) {
+//            getContext().unbindService(mServiceConnection)
+//            mServiceConnection = null
+//        }
+//    }
+//
+//    private class VideoInputServiceConnection : ServiceConnection {
+//        override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
+//            mService = iBinder as IExternalVideoInputService
+//        }
+//
+//        override fun onServiceDisconnected(componentName: ComponentName) {
+//            mService = null
+//        }
+//    }
+//
+//    private val iRtcEngineEventHandler: IRtcEngineEventHandler = object : IRtcEngineEventHandler() {
+//
+//        override fun onWarning(warn: Int) {
+//            Log.w(
+//                TAG,
+//                String.format(
+//                    "onWarning code %d message %s",
+//                    warn,
+//                    RtcEngine.getErrorDescription(warn)
+//                )
+//            )
+//        }
+//
+//
+//        override fun onError(err: Int) {
+//            Log.e(
+//                TAG,
+//                String.format("onError code %d message %s", err, RtcEngine.getErrorDescription(err))
+//            )
+////            showAlert(
+////                String.format(
+////                    "onError code %d message %s",
+////                    err,
+////                    RtcEngine.getErrorDescription(err)
+////                )
+////            )
+//        }
+//
+//        override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
+//            Log.i(TAG, String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
+////            showLongToast(String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
+//            myUid = uid
+//            joined = true
+//            handler.post {
+//                join!!.isEnabled = true
+//                join.text = getString(R.string.leave)
+//                localVideo.setEnabled(mLocalVideoExists)
+//                bindVideoService()
+//            }
+//        }
+//        override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
+//            super.onRemoteVideoStateChanged(uid, state, reason, elapsed)
+//            Log.i(TAG, "onRemoteVideoStateChanged:uid->$uid, state->$state")
+//        }
+//
+//        override fun onUserJoined(uid: Int, elapsed: Int) {
+//            super.onUserJoined(uid, elapsed)
+//            Log.i(TAG, "onUserJoined->$uid")
+////            showLongToast(String.format("user %d joined!", uid))
+//        }
+//        override fun onUserOffline(uid: Int, reason: Int) {
+//            Log.i(TAG, String.format("user %d offline! reason:%d", uid, reason))
+//
+//        }
+//    }
 }

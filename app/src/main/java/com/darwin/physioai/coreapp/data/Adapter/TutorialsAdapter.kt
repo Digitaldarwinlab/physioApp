@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.MediaController
 import androidx.recyclerview.widget.RecyclerView
+import com.darwin.physioai.coreapp.data.models.DataX
 import com.darwin.physioai.databinding.VideoItemBinding
 
-class TutorialsAdapter(private val cont: Context, private val list: List<DataXX>) : RecyclerView.Adapter<TutorialsAdapter.ViewHolder>() {
+class TutorialsAdapter(private val cont: Context, private val list: List<DataX>) : RecyclerView.Adapter<TutorialsAdapter.ViewHolder>() {
 
     val url = "https://myphysio.digitaldarwin.in/"
 

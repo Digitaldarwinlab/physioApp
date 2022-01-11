@@ -9,11 +9,12 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.darwin.physioai.R
+import com.darwin.physioai.coreapp.data.models.DataX
 import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
 
 class ExcerciseDetailsAdapter(
     private val cont: Context,
-    private val list: List<DataXX>,
+    private val list: List<DataX>,
     private val time: String? = null,
     private val b: Boolean
 ) : RecyclerView.Adapter<ExcerciseDetailsAdapter.ViewHolder>() {
@@ -49,7 +50,7 @@ class ExcerciseDetailsAdapter(
         holder.binding.startexercise.setOnClickListener {
             val bundle: Bundle = Bundle().apply {
                 putString("exercise", user.name.toString())
-                putString("angle", user.angle_data[1].angle_name)
+                putString("angle", user.angle[0].joint)
                 putString("pp_cp_id", user.pp_cp_id.toString())
                 putString("time", time)
                 putString("rep", user.Rep.toString())

@@ -6,16 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.darwin.physioai.coreapp.data.models.DataX
+import com.darwin.physioai.coreapp.data.models.TimeSlotMobile
 import com.darwin.physioai.databinding.TimeSlotItemBinding
 
 
 class TimeSlotAdapter(
-    private val list: List<TimeSlotMobileX>,
+    private val list: List<TimeSlotMobile>,
     private val b: Boolean,
     private val onItemClickInterface: OnItemClickInterface
 ) : RecyclerView.Adapter<TimeSlotAdapter.ViewHolder>() {
 
-    var timedatalist :ArrayList<DataXX>? = null
+    var timedatalist :ArrayList<DataX>? = null
     private var row_index : Int? = 0
 
     override fun getItemCount(): Int {
@@ -24,7 +26,7 @@ class TimeSlotAdapter(
 
     interface OnItemClickInterface {
         fun onLeadClicked(
-            timeSlotMobile: ArrayList<DataXX>,
+            timeSlotMobile: ArrayList<DataX>,
             position: Int,
             time: String,
             b: Boolean
@@ -40,7 +42,7 @@ class TimeSlotAdapter(
 
         if (row_index == position){
             onItemClickInterface.onLeadClicked(
-                user.data as ArrayList<DataXX>,
+                user.data as ArrayList<DataX>,
                 position,
                 user.time,
                 b
@@ -55,7 +57,7 @@ class TimeSlotAdapter(
 
         holder.binding.timelay.setOnClickListener {
             row_index = position;
-            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataXX>, position, user.time, b)
+            onItemClickInterface.onLeadClicked(user.data as ArrayList<DataX>, position, user.time, b)
             notifyDataSetChanged();
         }
     }
