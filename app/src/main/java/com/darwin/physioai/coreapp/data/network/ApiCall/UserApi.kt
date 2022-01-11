@@ -2,6 +2,7 @@ package com.example.taskmotl.data.Network.ApiCall
 
 
 import com.darwin.physioai.coreapp.data.models.AIscreenResponse
+import com.darwin.physioai.coreapp.data.models.ResponseModel
 import com.darwin.physioai.coreapp.data.models.VisitResponse
 import com.example.physioai.data.models.*
 import com.google.gson.JsonObject
@@ -19,7 +20,7 @@ interface UserApi {
     suspend fun getforgetpass(@Body user: JsonObject?): forgetpassResponse
 
     @POST("api/get-care-plan_mobile/")
-    suspend fun getScheduleRes(@Body user: JsonObject?): ScheduleResponseX
+    suspend fun getScheduleRes(@Body user: JsonObject?): ResponseModel
 
     @POST("api/patient-profile/")
     suspend fun getprofile(@Body user: JsonObject?): profileResponse

@@ -22,6 +22,8 @@ import com.darwin.physioai.coreapp.utils.SessionManager
 import com.darwin.physioai.coreapp.data.Adapter.ExcerciseDetailsAdapter
 import com.darwin.physioai.coreapp.data.Adapter.TimeSlotAdapter
 import com.darwin.physioai.coreapp.data.models.Data
+import com.darwin.physioai.coreapp.data.models.DataX
+import com.darwin.physioai.coreapp.data.models.TimeSlotMobile
 import com.google.gson.JsonObject
 import com.vivekkaushik.datepicker.DatePickerTimeline
 import com.vivekkaushik.datepicker.OnDateSelectedListener
@@ -45,9 +47,9 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     private var userid : String? = null
     private var episodeid : String? = null
     private var pat_name : String? = null
-    private lateinit var list : ArrayList<TimeSlotMobileX>
-    private lateinit var timelist : ArrayList<TimeSlotMobileX>
-    private lateinit var exerciselist : ArrayList<DataXX>
+    private lateinit var list : ArrayList<TimeSlotMobile>
+    private lateinit var timelist : ArrayList<TimeSlotMobile>
+    private lateinit var exerciselist : ArrayList<DataX>
     private lateinit var visitList : ArrayList<Data>
     private lateinit var visitItems : ArrayList<Data>
     private lateinit var listpres: ArrayList<MedicationDetail>
@@ -92,9 +94,9 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
             parseIntEID = episodeid!!.toInt()
             Log.d("LogId", parseIntEID.toString())
 
-            exerciselist = ArrayList<DataXX>()
-            list = ArrayList<TimeSlotMobileX>()
-            timelist = ArrayList<TimeSlotMobileX>()
+            exerciselist = ArrayList<DataX>()
+            list = ArrayList<TimeSlotMobile>()
+            timelist = ArrayList<TimeSlotMobile>()
             listpres = ArrayList<MedicationDetail>()
 
             visitList = ArrayList<Data>()
@@ -329,7 +331,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setupTimeSlotRecycler(timelist: ArrayList<TimeSlotMobileX>, b: Boolean) {
+    private fun setupTimeSlotRecycler(timelist: ArrayList<TimeSlotMobile>, b: Boolean) {
         binding.apply {
             timeSlotAdapter = TimeSlotAdapter(timelist, b,this@Schedule)
             timings.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -338,7 +340,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
         }
     }
 
-    private fun setupExcerciseRecycler(listimedate: List<DataXX>, time: String?, b: Boolean) {
+    private fun setupExcerciseRecycler(listimedate: List<DataX>, time: String?, b: Boolean) {
         binding.apply {
             exercisedetailsAdapter = ExcerciseDetailsAdapter(requireContext(),listimedate, time, b)
             recyclerV.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -347,7 +349,7 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
     }
 
     override fun onLeadClicked(
-        timeSlotMobile: ArrayList<DataXX>,
+        timeSlotMobile: ArrayList<DataX>,
         position: Int,
         time: String,
         b: Boolean

@@ -3,7 +3,6 @@ package com.darwin.physioai.coreapp.data.Adapter
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.Navigation
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.darwin.physioai.R
 import com.darwin.physioai.databinding.CustomLayoutforCalenderCareplanBinding
-import com.example.physioai.data.models.DataXX
 
 class ExcerciseDetailsAdapter(
     private val cont: Context,

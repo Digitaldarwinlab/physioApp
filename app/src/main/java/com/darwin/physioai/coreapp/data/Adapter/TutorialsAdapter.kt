@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.MediaController
 import androidx.recyclerview.widget.RecyclerView
 import com.darwin.physioai.databinding.VideoItemBinding
-import com.example.physioai.data.models.DataXX
 
 class TutorialsAdapter(private val cont: Context, private val list: List<DataXX>) : RecyclerView.Adapter<TutorialsAdapter.ViewHolder>() {
 

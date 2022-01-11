@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.darwin.physioai.databinding.TimeSlotItemBinding
-import com.example.physioai.data.models.DataXX
-import com.example.physioai.data.models.TimeSlotMobileX
 
 
 class TimeSlotAdapter(

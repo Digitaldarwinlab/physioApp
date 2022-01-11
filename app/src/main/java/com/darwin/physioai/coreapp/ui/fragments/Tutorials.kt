@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.darwin.physioai.R
 import com.darwin.physioai.databinding.TutorialsFragmentBinding
 import com.darwin.physioai.coreapp.data.Adapter.TutorialsAdapter
-import com.example.physioai.data.models.DataXX
 import com.example.physioai.data.network.Resource
 import com.darwin.physioai.coreapp.utils.CShowProgress
 import com.darwin.physioai.coreapp.utils.Constants

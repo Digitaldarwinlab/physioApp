@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.darwin.physioai.coreapp.data.models.ResponseModel
 import com.darwin.physioai.coreapp.data.models.VisitResponse
 import com.example.physioai.data.Repository.ScheduleRepository
 import com.example.physioai.data.models.PrescriptionResponse
-import com.example.physioai.data.models.ScheduleResponseX
 import com.example.physioai.data.network.Resource
 import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ScheduleViewModel @Inject constructor (private val repository:ScheduleRepository) : ViewModel() {
 
-    private val _ScheduleRes: MutableLiveData<Resource<ScheduleResponseX>> = MutableLiveData()
-    val ScheduleRes: LiveData<Resource<ScheduleResponseX>>
+    private val _ScheduleRes: MutableLiveData<Resource<ResponseModel>> = MutableLiveData()
+    val ScheduleRes: LiveData<Resource<ResponseModel>>
         get() = _ScheduleRes
 
     private val _VisitRes: MutableLiveData<Resource<VisitResponse>> = MutableLiveData()
