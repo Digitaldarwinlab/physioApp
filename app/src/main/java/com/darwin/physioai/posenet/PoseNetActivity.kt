@@ -434,39 +434,39 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === PROJECTION_REQ_CODE && resultCode === RESULT_OK) {
-            try {
-                val metrics = DisplayMetrics()
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics)
-                attr.data.putExtra(ExternalVideoInputManager.FLAG_SCREEN_WIDTH, metrics.widthPixels)
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_HEIGHT,
-                    metrics.heightPixels
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_DPI,
-                    metrics.density.toInt()
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_FRAME_RATE,
-                    DEFAULT_SHARE_FRAME_RATE
-                )
-                setVideoConfig(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    metrics.widthPixels,
-                    metrics.heightPixels
-                )
-                mService.setExternalVideoInput(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    attr.data
-                )
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode === PROJECTION_REQ_CODE && resultCode === RESULT_OK) {
+//            try {
+//                val metrics = DisplayMetrics()
+//                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics)
+//                attr.data.putExtra(ExternalVideoInputManager.FLAG_SCREEN_WIDTH, metrics.widthPixels)
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_SCREEN_HEIGHT,
+//                    metrics.heightPixels
+//                )
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_SCREEN_DPI,
+//                    metrics.density.toInt()
+//                )
+//                attr.data.putExtra(
+//                    ExternalVideoInputManager.FLAG_FRAME_RATE,
+//                    DEFAULT_SHARE_FRAME_RATE
+//                )
+//                setVideoConfig(
+//                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
+//                    metrics.widthPixels,
+//                    metrics.heightPixels
+//                )
+//                mService.setExternalVideoInput(
+//                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
+//                    attr.data
+//                )
+//            } catch (e: RemoteException) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 
     fun onClick(v: View) {
         if (v.id == R.id.btn_join) {
