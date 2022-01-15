@@ -61,10 +61,10 @@ class ScreenCaptureService : Service() {
                         bitmap?.copyPixelsFromBuffer(buffer)
 
                         // write bitmap to a file
-                        fos = FileOutputStream(mStoreDir + "/myscreen_" + IMAGES_PRODUCED + ".png")
+                        fos = FileOutputStream("$mStoreDir/myscreen_$IMAGES_PRODUCED.png")
                         bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                         IMAGES_PRODUCED++
-                        Log.e(TAG, "captured image: " + IMAGES_PRODUCED)
+                        Log.e(TAG, "captured image: $IMAGES_PRODUCED")
                     }
                 }
             } catch (e: Exception) {
