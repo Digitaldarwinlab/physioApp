@@ -1,35 +1,31 @@
 package com.darwin.physioai.agora
 
-import com.darwin.physioai.agora.NotificationUtils
-import android.annotation.TargetApi
-import android.content.Intent
-import com.darwin.physioai.agora.ScreenCaptureActivity
-import android.media.projection.MediaProjectionManager
-import android.media.projection.MediaProjection
-import android.hardware.display.VirtualDisplay
-import com.darwin.physioai.agora.ScreenCaptureService.OrientationChangeCallback
-import android.graphics.Bitmap
-import com.darwin.physioai.agora.ScreenCaptureService
-import android.view.OrientationEventListener
-import android.view.WindowManager
-import com.darwin.physioai.agora.ScreenCaptureService.MediaProjectionStopCallback
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.PixelFormat
-import com.darwin.physioai.agora.ScreenCaptureService.ImageAvailableListener
 import android.hardware.display.DisplayManager
+import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
+import android.media.projection.MediaProjection
+import android.media.projection.MediaProjectionManager
 import android.os.*
 import android.util.Log
 import android.view.Display
+import android.view.OrientationEventListener
+import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.core.util.Pair
+import com.darwin.physioai.agora.ScreenCaptureService
+import com.darwin.physioai.agora.ScreenCaptureService.MediaProjectionStopCallback
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class ScreenCaptureService : Service() {
     private var mMediaProjection: MediaProjection? = null
     private var mStoreDir: String? = null
@@ -62,11 +58,11 @@ class ScreenCaptureService : Service() {
                             mHeight,
                             Bitmap.Config.ARGB_8888
                         )
-                        bitmap.copyPixelsFromBuffer(buffer)
+                        bitmap?.copyPixelsFromBuffer(buffer)
 
                         // write bitmap to a file
                         fos = FileOutputStream(mStoreDir + "/myscreen_" + IMAGES_PRODUCED + ".png")
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, fos)
                         IMAGES_PRODUCED++
                         Log.e(TAG, "captured image: " + IMAGES_PRODUCED)
                     }
@@ -154,11 +150,11 @@ class ScreenCaptureService : Service() {
         }.start()
     }
 
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (isStartCommand(intent)) {
             // create notification
-            val notification: Pair<Int, Notification> =
-                com.mtsahakis.mediaprojectiondemo.NotificationUtils.getNotification(this)
+            val notification: Pair<Int, Notification> = NotificationUtils.getNotification(this)
             startForeground(notification.first, notification.second)
             // start projection
             val resultCode = intent.getIntExtra(RESULT_CODE, Activity.RESULT_CANCELED)
@@ -207,6 +203,7 @@ class ScreenCaptureService : Service() {
             }
         }
     }
+
 
     @SuppressLint("WrongConstant")
     private fun createVirtualDisplay() {
