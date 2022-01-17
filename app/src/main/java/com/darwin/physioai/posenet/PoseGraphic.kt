@@ -1468,7 +1468,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
   fun calculaterepminmax(repDoneForSelectedExcercise : Int ) {
     Log.d("LogT"," variable.rep.toString()")
-    if (repDoneForSelectedExcercise == variable.rep?.toInt()) { //this come from database
+    if (repDoneForSelectedExcercise == 2 { //this come from database
       Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
         flagcount++
