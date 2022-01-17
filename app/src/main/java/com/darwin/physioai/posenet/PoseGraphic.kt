@@ -27,7 +27,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
                                        private val showInFrameLikelihood: Boolean,
                                        private val visualizeZ: Boolean,
                                        private val rescaleZForVisualization: Boolean,
-                                       ) :
+) :
   GraphicOverlay.Graphic(overlay) {
   private val leftPaint: Paint
   private val whitePaint: Paint = Paint()
@@ -126,7 +126,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
     val angle = arrayOf(leftkneeangle)
     angle25public = leftkneeangle
     for (elements in angle) {
-      drawText(canvas, elements.toString(), 3)
+//      drawText(canvas, elements.toString(), 3)
       Log.i("angle of knee", "$elements    $currentDate")
       print("$elements   $currentDate")
     }
@@ -545,6 +545,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
     //rep logic value4
 
+    var repcount4 = 0
     var repsDone4 = 0
     var maxAng4 = 175
     var minAng4 = 0
@@ -914,7 +915,7 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
         repsDone4 += 1;
         var setcount4 = setsDone4
         Log.d("LogTag8", setsDone4.toString())
-        val repcount4 = repsDone4
+        repcount4 = repsDone4
 
 //        PoseVariables.repcountFinal = repcount
 
@@ -1432,58 +1433,44 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
   fun updateExcersiseProgress() {
     Log.d("LogAngleTest", variable.angle.toString())
-    when {
-      variable.angle.equals("lefthip", true) -> {
-        calculateRepAndMinMax(repsDone)
-      }
-      variable.angle.equals("righthip", true) -> {
-        calculateRepAndMinMax(repsDone1)
-      }
-      variable.angle.equals("leftshoulder", true) -> {
-        calculateRepAndMinMax(repsDone2)
-      }
-      variable.angle.equals("rightshoulder", true) -> {
-        calculateRepAndMinMax(repsDone3)
-      }
-      variable.angle.equals("leftknee", true) -> {
-        Log.d("LogTagLeftKnee", variable.angle.toString())
-        calculateRepAndMinMax(repsDone4)
-      }
-      variable.angle.equals("rightknee", true) -> {
-        calculateRepAndMinMax(repsDone5)
-      }
-      variable.angle.equals("rightelbow", true) -> {
-        calculateRepAndMinMax(repsDone6)
-      }
-      variable.angle.equals("leftelbow", true) -> {
-        calculateRepAndMinMax(repsDone7)
-      }
-      variable.angle.equals("leftankle", true) -> {
-        calculateRepAndMinMax(repsDone8)
-      }
-      variable.angle.equals("rightangle", true) -> {
-        calculateRepAndMinMax(repsDone9)
-      }
-      variable.angle.equals("leftwrist", true) -> {
-        calculateRepAndMinMax(repsDone10)
-      }
-      variable.angle.equals("rightwrist", true) -> {
-        calculateRepAndMinMax(repsDone11)
-      }
-      variable.angle.equals("leftneck", true) -> {
-        calculateRepAndMinMax(repsDone12)
-      }
-      variable.angle.equals("rightneck", true) -> {
-        calculateRepAndMinMax(repsDone13)
-      }
+    val jsonAngle = variable.angle.toString()
+    Log.d("LogCount", repcount4.toString())
+    if(jsonAngle == "lefthip"){
+      calculaterepminmax(repsDone)
+    }else if(jsonAngle == "righthip"){
+      calculaterepminmax(repsDone1)
+    }else if(jsonAngle == "leftshoulder"){
+      calculaterepminmax(repsDone2)
+    }else if (jsonAngle == "rightshoulder"){
+      calculaterepminmax(repsDone3)
+    }else if(jsonAngle.equals("leftKnee")){
+      calculaterepminmax(repcount4)
+    }else if(jsonAngle == "rightknee") {
+      calculaterepminmax(repsDone5)
+    }else if(jsonAngle == "rightelbow"){
+      calculaterepminmax(repsDone6)
+    }else if(jsonAngle == "leftelbow"){
+      calculaterepminmax(repsDone7)
+    }else if(jsonAngle == "leftankle"){
+      calculaterepminmax(repsDone8)
+    }else if(jsonAngle == "rightankle"){
+      calculaterepminmax(repsDone9)
+    }else if(jsonAngle == "leftwrist"){
+      calculaterepminmax(repsDone10)
+    }else if(jsonAngle == "rightwrist"){
+      calculaterepminmax(repsDone11)
+    }else if(jsonAngle == "leftneck"){
+      calculaterepminmax(repsDone12)
+    }else if(jsonAngle == "rightneck"){
+      calculaterepminmax(repsDone13)
     }
   }
 
-  fun calculateRepAndMinMax(repDoneForSelectedExcercise : Int ) {
-    if (repDoneForSelectedExcercise == 7) { //this come from database
+  fun calculaterepminmax(repDoneForSelectedExcercise : Int ) {
+    Log.d("LogT"," variable.rep.toString()")
+    if (repDoneForSelectedExcercise == variable.rep?.toInt()) { //this come from database
       Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
-
         flagcount++
         val execer = variable.excercise.toString()
         val pp_cp_id = variable.pp_cp_id.toString()

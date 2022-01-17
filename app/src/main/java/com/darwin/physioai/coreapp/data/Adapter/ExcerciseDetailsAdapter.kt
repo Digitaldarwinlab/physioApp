@@ -53,7 +53,7 @@ class ExcerciseDetailsAdapter(
                 putString("angle", user.angle[0].joint)
                 putString("pp_cp_id", user.pp_cp_id.toString())
                 putString("time", time)
-                putString("rep", user.Rep.toString())
+                putString("rep", user.Rep.rep_count.toString())
             }
             Navigation.findNavController(it).navigate(R.id.action_schedule_to_instructionsFragment, bundle)
         }

@@ -1,23 +1,15 @@
 package com.darwin.physioai.posenet
 
 
-import android.R.attr
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
-import android.media.projection.MediaProjectionManager
 import android.opengl.EGLSurface
-import android.os.*
-import android.text.TextUtils
-import android.util.DisplayMetrics
+import android.os.Build
+import android.os.Bundle
 import android.util.Log
-import android.view.TextureView
 import android.view.View
 import android.widget.*
-import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
@@ -31,15 +23,9 @@ import com.darwin.physioai.posenet.core.GraphicOverlay
 import com.darwin.physioai.posenet.core.PreferenceUtils
 import com.darwin.physioai.posenet.core.VisionImageProcessor
 import com.google.mlkit.common.MlKitException
-import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.gdp.EglCore
-import io.agora.rtc.video.VideoEncoderConfiguration
-import io.agora.rtc.video.VideoEncoderConfiguration.ORIENTATION_MODE
-import io.agora.rtc.video.VideoEncoderConfiguration.VideoDimensions
-import java.io.File
 import java.util.*
-
 
 
 class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
@@ -61,35 +47,8 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     private lateinit var exName : TextView
     private lateinit var rep : TextView
     private lateinit var value : TextView
-    private lateinit var fl_local : FrameLayout
-    private lateinit var fl_remote : FrameLayout
+
     private var engine: RtcEngine? = null
-
-    private val DEFAULT_CAPTURE_WIDTH = 640
-    private val DEFAULT_CAPTURE_HEIGHT = 480
-    private val join: Button? = null
-    private val et_channel: EditText? = null
-    private var myUid = 0
-    private var joined = false
-    private var mPreviewTexture = 0
-    private var mPreviewSurfaceTexture: SurfaceTexture? = null
-    private var mEglCore: EglCore? = null
-    private var mDummySurface: EGLSurface? = null
-    private var mDrawSurface: EGLSurface? = null
-    private val mTransform = FloatArray(16)
-    private val mMVPMatrix = FloatArray(16)
-    private var mMVPMatrixInit = false
-    private lateinit var mCamera: android.hardware.Camera
-    private var mPreviewing = false
-    private var mSurfaceWidth = 0
-    private var mSurfaceHeight = 0
-    private var mTextureDestroyed = false
-//    private var mProgram: ProgramTextureOES? = null
-
-
-    private val interval: Long = 0
-    private val base: Long = 0
-    var set_count : Int? = 0
     // private var varibalesPose = PoseGraphic.PoseVariables
 
     object Myvariables{
@@ -430,262 +389,6 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
             }
             Log.i(TAG, "Permission NOT granted: $permission")
             return false
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === PROJECTION_REQ_CODE && resultCode === RESULT_OK) {
-            try {
-                val metrics = DisplayMetrics()
-                getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics)
-                attr.data.putExtra(ExternalVideoInputManager.FLAG_SCREEN_WIDTH, metrics.widthPixels)
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_HEIGHT,
-                    metrics.heightPixels
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_SCREEN_DPI,
-                    metrics.density.toInt()
-                )
-                attr.data.putExtra(
-                    ExternalVideoInputManager.FLAG_FRAME_RATE,
-                    DEFAULT_SHARE_FRAME_RATE
-                )
-                setVideoConfig(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    metrics.widthPixels,
-                    metrics.heightPixels
-                )
-                mService.setExternalVideoInput(
-                    ExternalVideoInputManager.TYPE_SCREEN_SHARE,
-                    attr.data
-                )
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun onClick(v: View) {
-        if (v.id == R.id.btn_join) {
-            if (!joined) {
-                CommonUtil.hideInputBoard(getActivity(), et_channel)
-
-                TEXTUREVIEW = TextureView(getContext())
-                // call when join button hit
-                val channelId = et_channel!!.text.toString()
-                // Check permission
-                if (AndPermission.hasPermissions(
-                        this,
-                        Permission.Group.STORAGE,
-                        Permission.Group.MICROPHONE,
-                        Permission.Group.CAMERA
-                    )
-                ) {
-                    joinChannel(channelId)
-                    return
-                }
-                // Request permission
-                AndPermission.with(this).runtime().permission(
-                    Permission.Group.STORAGE,
-                    Permission.Group.MICROPHONE,
-                    Permission.Group.CAMERA
-                ).onGranted { permissions ->
-                    // Permissions Granted
-                    joinChannel(channelId)
-                }.start()
-            } else {
-                joined = false
-                join!!.text = getString(R.string.join)
-                localVideo.setEnabled(false)
-                fl_local.removeAllViews()
-                javax.script.ScriptEngine.ENGINE.leaveChannel()
-                TEXTUREVIEW = null
-                unbindVideoService()
-            }
-        } else if (v.id == R.id.localVideo) {
-            try {
-                val intent = Intent()
-                setVideoConfig(
-                    ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
-                    LOCAL_VIDEO_WIDTH,
-                    LOCAL_VIDEO_HEIGHT
-                )
-                intent.putExtra(ExternalVideoInputManager.FLAG_VIDEO_PATH, mLocalVideoPath)
-                if (mService.setExternalVideoInput(
-                        ExternalVideoInputManager.TYPE_LOCAL_VIDEO,
-                        intent
-                    )
-                ) {
-                    fl_local.removeAllViews()
-                    fl_local.addView(
-                        TEXTUREVIEW,
-                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                        RelativeLayout.LayoutParams.MATCH_PARENT
-                    )
-                }
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-        } else if (v.id == R.id.screenShare) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                /**remove local preview */
-                fl_local.removeAllViews()
-                /** */
-                val mpm =
-                    getContext().getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-                val intent = mpm.createScreenCaptureIntent()
-                startActivityForResult(intent, PROJECTION_REQ_CODE)
-            } else {
-                showAlert(getString(R.string.lowversiontip))
-            }
-        }
-    }
-
-    private fun checkLocalVideo(): Boolean {
-        val dir: File = getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-        val videoFile = File(dir, VIDEO_NAME)
-        mLocalVideoPath = videoFile.getAbsolutePath()
-        mLocalVideoExists = videoFile.exists()
-        if (!mLocalVideoExists) {
-            showAlert(
-                java.lang.String.format(
-                    getString(R.string.alert_no_local_video_message),
-                    mLocalVideoPath
-                )
-            )
-        }
-        return mLocalVideoExists
-    }
-
-    private fun setVideoConfig(sourceType: Int, width: Int, height: Int) {
-        val mode: ORIENTATION_MODE
-        mode =
-            when (sourceType) {
-                ExternalVideoInputManager.TYPE_LOCAL_VIDEO, ExternalVideoInputManager.TYPE_SCREEN_SHARE -> ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
-                else -> ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
-            }
-        /**Setup video stream encoding configs */
-        javax.script.ScriptEngine.ENGINE.setVideoEncoderConfiguration(
-            VideoEncoderConfiguration(
-                VideoDimensions(width, height),
-                VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_15,
-                VideoEncoderConfiguration.STANDARD_BITRATE, mode
-            )
-        )
-    }
-
-    private fun joinChannel(channelId: String) {
-        // Check if the context is valid
-        val context: Context = getContext() ?: return
-
-        javax.script.ScriptEngine.ENGINE.setChannelProfile(Constants.CHANNEL_PROFILE_LIVE_BROADCASTING)
-        /**Sets the role of a user (Live Broadcast only). */
-        javax.script.ScriptEngine.ENGINE.setClientRole(Constants.CLIENT_ROLE_BROADCASTER)
-
-        javax.script.ScriptEngine.ENGINE.enableVideo()
-
-        javax.script.ScriptEngine.ENGINE.setDefaultAudioRoutetoSpeakerphone(true)
-        javax.script.ScriptEngine.ENGINE.setEnableSpeakerphone(false)
-
-        var accessToken: String? = getString(R.string.agora_access_token)
-        if (TextUtils.equals(accessToken, "") || TextUtils.equals(
-                accessToken,
-                "<#YOUR ACCESS TOKEN#>"
-            )
-        ) {
-            accessToken = null
-        }
-
-        val res: Int = ENGINE.joinChannel(accessToken, channelId, "Extra Optional Data", 0)
-        if (res != 0) {
-//            showAlert(RtcEngine.getErrorDescription(Math.abs(res)))
-            return
-        }
-        // Prevent repeated entry
-        join!!.isEnabled = false
-    }
-
-    private fun bindVideoService() {
-        val intent = Intent()
-        intent.setClass(getContext(), ExternalVideoInputService::class.java)
-        mServiceConnection = VideoInputServiceConnection()
-        getContext().bindService(intent, mServiceConnection, BIND_AUTO_CREATE)
-    }
-
-    private fun unbindVideoService() {
-        if (mServiceConnection != null) {
-            getContext().unbindService(mServiceConnection)
-            mServiceConnection = null
-        }
-    }
-
-    private class VideoInputServiceConnection : ServiceConnection {
-        override fun onServiceConnected(componentName: ComponentName, iBinder: IBinder) {
-            mService = iBinder as IExternalVideoInputService
-        }
-
-        override fun onServiceDisconnected(componentName: ComponentName) {
-            mService = null
-        }
-    }
-
-    private val iRtcEngineEventHandler: IRtcEngineEventHandler = object : IRtcEngineEventHandler() {
-
-        override fun onWarning(warn: Int) {
-            Log.w(
-                TAG,
-                String.format(
-                    "onWarning code %d message %s",
-                    warn,
-                    RtcEngine.getErrorDescription(warn)
-                )
-            )
-        }
-
-
-        override fun onError(err: Int) {
-            Log.e(
-                TAG,
-                String.format("onError code %d message %s", err, RtcEngine.getErrorDescription(err))
-            )
-//            showAlert(
-//                String.format(
-//                    "onError code %d message %s",
-//                    err,
-//                    RtcEngine.getErrorDescription(err)
-//                )
-//            )
-        }
-
-        override fun onJoinChannelSuccess(channel: String, uid: Int, elapsed: Int) {
-            Log.i(TAG, String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
-//            showLongToast(String.format("onJoinChannelSuccess channel %s uid %d", channel, uid))
-            myUid = uid
-            joined = true
-            val handler = Handler()
-            handler.post {
-                join!!.isEnabled = true
-                join.text = getString(R.string.leave)
-//                localVideo.setEnabled(mLocalVideoExists)
-                bindVideoService()
-            }
-        }
-        override fun onRemoteVideoStateChanged(uid: Int, state: Int, reason: Int, elapsed: Int) {
-            super.onRemoteVideoStateChanged(uid, state, reason, elapsed)
-            Log.i(TAG, "onRemoteVideoStateChanged:uid->$uid, state->$state")
-        }
-
-        override fun onUserJoined(uid: Int, elapsed: Int) {
-            super.onUserJoined(uid, elapsed)
-            Log.i(TAG, "onUserJoined->$uid")
-//            showLongToast(String.format("user %d joined!", uid))
-        }
-        override fun onUserOffline(uid: Int, reason: Int) {
-            Log.i(TAG, String.format("user %d offline! reason:%d", uid, reason))
-
         }
     }
 }
