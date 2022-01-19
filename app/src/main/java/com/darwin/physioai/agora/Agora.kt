@@ -16,36 +16,41 @@ import com.darwin.physioai.R
 import io.agora.rtc.IRtcEngineEventHandler
 import io.agora.rtc.RtcEngine
 import io.agora.rtc.video.VideoCanvas
+import io.agora.rtc.mediaio.MediaIO
 
+import io.agora.rtc.mediaio.AgoraSurfaceView
 
 class Agora : AppCompatActivity() {
 
-    // Kotlin
-    // Fill the App ID of your project generated on Agora Console.
     private val APP_ID = "f6181a4c31b14c80a83607d8118c7b9e"
-
-    // Fill the channel name.
     private val CHANNEL = "PhysioAI"
-
-    // Fill the temp token generated on Agora Console.
     private val TOKEN =
         "006f6181a4c31b14c80a83607d8118c7b9eIADznsGReUybJ9q7shawy2MGqorJOp+4Jb86C7p9aRhZ199bxfkAAAAAEABhfJB/sYq7YQEAAQCxirth"
 
     private var mRtcEngine: RtcEngine? = null
+    private val PERMISSION_REQ_ID_RECORD_AUDIO = 22
+    private val PERMISSION_REQ_ID_CAMERA = PERMISSION_REQ_ID_RECORD_AUDIO + 1
 
     private val mRtcEventHandler = object : IRtcEngineEventHandler() {
-        // Listen for the remote user joining the channel to get the uid of the user.
         override fun onUserJoined(uid: Int, elapsed: Int) {
+            val surfaceView = AgoraSurfaceView(this@Agora)
+            surfaceView.init(null)
+            surfaceView.setZOrderMediaOverlay(true)
+
+            surfaceView.setBufferType(MediaIO.BufferType.BYTE_BUFFER)
+            surfaceView.setPixelFormat(MediaIO.PixelFormat.I420)
+            if (fl_remote.getChildCount() > 0) {
+                fl_remote.removeAllViews()
+            }
+            fl_remote.addView(surfaceView)
+            // Sets the remote video renderer
+            // Sets the remote video renderer
+            mRtcEngine?.setRemoteVideoRenderer(uid, surfaceView)
             runOnUiThread {
-                // Call setupRemoteVideo to set the remote video view after getting uid from the onUserJoined callback.
                 setupRemoteVideo(uid)
             }
         }
     }
-
-    // Kotlin
-    private val PERMISSION_REQ_ID_RECORD_AUDIO = 22
-    private val PERMISSION_REQ_ID_CAMERA = PERMISSION_REQ_ID_RECORD_AUDIO + 1
 
     private fun checkSelfPermission(permission: String, requestCode: Int): Boolean {
         if (ContextCompat.checkSelfPermission(this, permission) !=
@@ -75,7 +80,6 @@ class Agora : AppCompatActivity() {
 
     }
 
-    // Kotlin
     override fun onDestroy() {
         super.onDestroy()
 
@@ -90,23 +94,15 @@ class Agora : AppCompatActivity() {
         } catch (e: Exception) {
 
         }
-
-        // By default, video is disabled, and you need to call enableVideo to start a video stream.
         mRtcEngine!!.enableVideo()
 
         val localContainer = findViewById<FrameLayout>(R.id.local_video_view_container2)
-        // Call CreateRendererView to create a SurfaceView object and add it as a child to the FrameLayout.
         val localFrame = RtcEngine.CreateRendererView(baseContext)
         localContainer.addView(localFrame)
-        // Pass the SurfaceView object to Agora so that it renders the local video.
         mRtcEngine!!.setupLocalVideo(VideoCanvas(localFrame, VideoCanvas.RENDER_MODE_FIT, 0))
-
-
-        // Join the channel with a token.
         mRtcEngine!!.joinChannel(TOKEN, CHANNEL, "", 0)
     }
 
-    // Kotlin
     private fun setupRemoteVideo(uid: Int) {
         val remoteContainer = findViewById<FrameLayout>(R.id.remote_video_view_container2)
 
