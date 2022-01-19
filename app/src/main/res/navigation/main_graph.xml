@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_profile_to_edit"
             app:destination="@id/edit" />
+        <action
+            android:id="@+id/action_profile_to_screenCaptureFragment"
+            app:destination="@id/screenCaptureFragment" />
     </fragment>
     <fragment
         android:id="@+id/tutorials"
@@ -75,4 +78,8 @@
         android:id="@+id/agora"
         android:name="com.darwin.physioai.agora.Agora"
         android:label="Agora" />
+    <fragment
+        android:id="@+id/screenCaptureFragment"
+        android:name="com.darwin.physioai.agora.ScreenCaptureFragment"
+        android:label="ScreenCaptureFragment" />
 </navigation>

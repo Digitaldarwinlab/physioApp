@@ -41,6 +41,8 @@ android {
 
 dependencies {
 
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -78,8 +80,6 @@ dependencies {
     def lottieVersion = "4.1.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
 
-    //Agora
-    implementation 'io.agora.rtc:full-sdk:3.5.2'
 
     //Third Party
     implementation 'com.vivekkaushik.datepicker:datePickerTimeline:0.0.4'

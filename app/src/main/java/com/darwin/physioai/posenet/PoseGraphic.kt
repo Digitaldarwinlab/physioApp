@@ -1431,44 +1431,58 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
   }
 
 
-  fun updateExcersiseProgress() {
+  private fun updateExcersiseProgress() {
     Log.d("LogAngleTest", variable.angle.toString())
-    val jsonAngle = variable.angle.toString()
+    val jsonAngle : String = variable.angle.toString()
     Log.d("LogCount", repcount4.toString())
+    calculaterepminmax(repcount4)
     if(jsonAngle == "lefthip"){
       calculaterepminmax(repsDone)
-    }else if(jsonAngle == "righthip"){
+    }
+    if(jsonAngle == "righthip"){
       calculaterepminmax(repsDone1)
-    }else if(jsonAngle == "leftshoulder"){
+    }
+    if(jsonAngle == "leftshoulder"){
       calculaterepminmax(repsDone2)
-    }else if (jsonAngle == "rightshoulder"){
+    }
+    if (jsonAngle == "rightshoulder"){
       calculaterepminmax(repsDone3)
-    }else if(jsonAngle.equals("leftKnee")){
-      calculaterepminmax(repcount4)
-    }else if(jsonAngle == "rightknee") {
+    }
+    if(jsonAngle == "leftKnee"){
+      calculaterepminmax(repsDone4)
+    }
+    if(jsonAngle == "rightknee") {
       calculaterepminmax(repsDone5)
-    }else if(jsonAngle == "rightelbow"){
+    }
+    if(jsonAngle == "rightelbow"){
       calculaterepminmax(repsDone6)
-    }else if(jsonAngle == "leftelbow"){
+    }
+    if(jsonAngle == "leftelbow"){
       calculaterepminmax(repsDone7)
-    }else if(jsonAngle == "leftankle"){
+    }
+    if(jsonAngle == "leftankle"){
       calculaterepminmax(repsDone8)
-    }else if(jsonAngle == "rightankle"){
+    }
+    if(jsonAngle == "rightankle"){
       calculaterepminmax(repsDone9)
-    }else if(jsonAngle == "leftwrist"){
+    }
+    if(jsonAngle == "leftwrist") {
       calculaterepminmax(repsDone10)
-    }else if(jsonAngle == "rightwrist"){
+    }
+    if(jsonAngle == "rightwrist"){
       calculaterepminmax(repsDone11)
-    }else if(jsonAngle == "leftneck"){
+    }
+    if(jsonAngle == "leftneck"){
       calculaterepminmax(repsDone12)
-    }else if(jsonAngle == "rightneck"){
+    }
+    if(jsonAngle == "rightneck"){
       calculaterepminmax(repsDone13)
     }
   }
 
-  fun calculaterepminmax(repDoneForSelectedExcercise : Int ) {
+  private fun calculaterepminmax(repDoneForSelectedExcercise : Int ) {
     Log.d("LogT"," variable.rep.toString()")
-    if (repDoneForSelectedExcercise == 2 { //this come from database
+    if (repDoneForSelectedExcercise.toString() == variable.rep.toString()) { //this come from database
       Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
         flagcount++

@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".coreapp.ui.MyApplication"
@@ -43,6 +44,9 @@
         <activity android:name=".posenet.core.SettingsActivity" />
         <activity android:name=".posenet.AfterStats" />
         <activity android:name=".posenet.PoseNetActivity" />
+        <activity android:name=".agora.ScreenCaptureActivity" />
+        <service android:name=".agora.ScreenCaptureService"
+            android:foregroundServiceType="mediaProjection"/>
     </application>
 
 </manifest>

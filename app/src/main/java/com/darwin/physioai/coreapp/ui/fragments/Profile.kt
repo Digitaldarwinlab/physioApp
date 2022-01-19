@@ -10,17 +10,18 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import com.darwin.physioai.R
-import com.darwin.physioai.databinding.ProfileFragmentBinding
-import com.example.physioai.data.models.profileResponse
-import com.example.physioai.data.network.Resource
+
 import com.darwin.physioai.coreapp.ui.MainActivity
 import com.darwin.physioai.coreapp.utils.CShowProgress
 import com.darwin.physioai.coreapp.utils.Constants
 import com.darwin.physioai.coreapp.utils.SessionManager
+import com.darwin.physioai.databinding.ProfileFragmentBinding
+import com.example.physioai.data.models.profileResponse
+import com.example.physioai.data.network.Resource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
+import com.darwin.physioai.agora.ScreenCaptureActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,7 +78,9 @@ class Profile : Fragment(R.layout.profile_fragment) {
 
         binding?.apply {
             editb.setOnClickListener {
-                Navigation.findNavController(requireView()).navigate(R.id.action_profile_to_edit)
+               // Navigation.findNavController(requireView()).navigate(R.id.action_profile_to_edit)
+                val i  = Intent(requireContext(), ScreenCaptureActivity::class.java)
+                startActivity(i)
             }
         }
     }

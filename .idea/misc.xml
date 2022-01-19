@@ -35,6 +35,10 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.28888888888888886" />
         <entry key="app/src/main/res/layout/activity_posenet.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.3098958333333333" />
+        <entry key="app/src/main/res/layout/fragment_screen_capture.xml" value="0.2907692307692308" />
+        <entry key="app/src/main/res/layout/fragment_screenshare.xml" value="0.2907692307692308" />
+        <entry key="app/src/main/res/layout/fragment_switch_external_video.xml" value="0.3101851851851852" />
+        <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.2907692307692308" />
         <entry key="app/src/main/res/layout/schedule_fragment.xml" value="0.3098958333333333" />
         <entry key="app/src/main/res/layout/settings_style.xml" value="0.16770833333333332" />
         <entry key="app/src/main/res/layout/toggle_style.xml" value="0.45" />

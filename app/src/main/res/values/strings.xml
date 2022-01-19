@@ -120,8 +120,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-<!--    Agora-->
+    <!--    Agora-->
     <string name="agora_app_id"></string>
     <string name="agora_access_token"></string>
     <string name="chanel_support_char" translatable="false">qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890 !#$%()+-:;&lt;=.>?@[]^_{}|~,&amp;</string>
+    <string name="camera">Camera</string>
+    <string name="screenshare">Screenshare</string>
+    <string name="rendernote">Rendernote</string>
+    <string name="channelid">channelid</string>
+    <string name="join">Join</string>
+    <string name="localvideo">LocalVideo</string>
 </resources>

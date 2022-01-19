@@ -12,8 +12,10 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 
 
-class BaseFragment : Fragment() {
+open class BaseFragment : Fragment() {
+
     protected var handler: Handler? = null
+
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         handler = Handler(Looper.getMainLooper())
