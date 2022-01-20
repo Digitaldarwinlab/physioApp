@@ -24,8 +24,7 @@ class Agora : AppCompatActivity() {
 
     private val APP_ID = "f6181a4c31b14c80a83607d8118c7b9e"
     private val CHANNEL = "PhysioAI"
-    private val TOKEN =
-        "006f6181a4c31b14c80a83607d8118c7b9eIADznsGReUybJ9q7shawy2MGqorJOp+4Jb86C7p9aRhZ199bxfkAAAAAEABhfJB/sYq7YQEAAQCxirth"
+    private val TOKEN = "006f6181a4c31b14c80a83607d8118c7b9eIADznsGReUybJ9q7shawy2MGqorJOp+4Jb86C7p9aRhZ199bxfkAAAAAEABhfJB/sYq7YQEAAQCxirth"
 
     private var mRtcEngine: RtcEngine? = null
     private val PERMISSION_REQ_ID_RECORD_AUDIO = 22
@@ -39,10 +38,10 @@ class Agora : AppCompatActivity() {
 
             surfaceView.setBufferType(MediaIO.BufferType.BYTE_BUFFER)
             surfaceView.setPixelFormat(MediaIO.PixelFormat.I420)
-            if (fl_remote.getChildCount() > 0) {
-                fl_remote.removeAllViews()
-            }
-            fl_remote.addView(surfaceView)
+//            if (fl_remote.getChildCount() > 0) {
+//                fl_remote.removeAllViews()
+//            }
+//            fl_remote.addView(surfaceView)
             // Sets the remote video renderer
             // Sets the remote video renderer
             mRtcEngine?.setRemoteVideoRenderer(uid, surfaceView)

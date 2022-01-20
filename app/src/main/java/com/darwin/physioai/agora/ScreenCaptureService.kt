@@ -21,16 +21,20 @@ import android.os.Looper
 import android.util.Log
 import android.view.Display
 import android.view.OrientationEventListener
+import android.view.SurfaceView
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.core.util.Pair
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class ScreenCaptureService : Service() {
+class ScreenCaptureService : LifecycleService() {
     private var mMediaProjection: MediaProjection? = null
     private var mStoreDir: String? = null
     private var mImageReader: ImageReader? = null
@@ -41,6 +45,7 @@ class ScreenCaptureService : Service() {
     private var mWidth = 0
     private var mHeight = 0
     private var mRotation = 0
+    private var targetSurface : SurfaceView? = null
     private var mOrientationChangeCallback: OrientationChangeCallback? = null
 
     private inner class ImageAvailableListener : ImageReader.OnImageAvailableListener {
@@ -125,9 +130,6 @@ class ScreenCaptureService : Service() {
         }
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -159,8 +161,9 @@ class ScreenCaptureService : Service() {
         }.start()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (isStartCommand(intent)) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        if (isStartCommand(intent!!)) {
             // create notification
             val notification: Pair<Int, Notification> = NotificationUtils.getNotification(this)
             startForeground(notification.first, notification.second)
@@ -215,16 +218,20 @@ class ScreenCaptureService : Service() {
     @SuppressLint("WrongConstant")
     private fun createVirtualDisplay() {
         // get width and height
-        mWidth = Resources.getSystem().displayMetrics.widthPixels
-        mHeight = Resources.getSystem().displayMetrics.heightPixels
-
-        // start capture reader
-        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2)
+//        mWidth = Resources.getSystem().displayMetrics.widthPixels
+//        mHeight = Resources.getSystem().displayMetrics.heightPixels
+//
+        targetSurface = ScreenCaptureActivity.variables.targetview
+//        ScreenCaptureActivity.variables.targetview.observe(this, Observer {
+//            targetSurface = it
+//        })
+//        // start capture reader
+//        mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2)
         mVirtualDisplay = mMediaProjection!!.createVirtualDisplay(
-            SCREENCAP_NAME, mWidth, mHeight,
-            mDensity, virtualDisplayFlags, mImageReader!!.surface, null, mHandler
+            SCREENCAP_NAME, targetSurface?.width!!, targetSurface?.height!!,
+            mDensity, virtualDisplayFlags, targetSurface?.holder?.surface, null, null
         )
-        mImageReader!!.setOnImageAvailableListener(ImageAvailableListener(), mHandler)
+//        mImageReader!!.setOnImageAvailableListener(ImageAvailableListener(), mHandler)
     }
 
     companion object {
@@ -236,6 +243,8 @@ class ScreenCaptureService : Service() {
         private const val STOP = "STOP"
         private const val SCREENCAP_NAME = "screencap"
         private var IMAGES_PRODUCED = 0
+
+
         fun getStartIntent(context: Context?, resultCode: Int, data: Intent?): Intent {
             val intent = Intent(context, ScreenCaptureService::class.java)
             intent.putExtra(ACTION, START)
