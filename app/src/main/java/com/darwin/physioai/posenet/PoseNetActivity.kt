@@ -3,11 +3,10 @@ package com.darwin.physioai.posenet
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.SurfaceTexture
-import android.opengl.EGLSurface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.SurfaceView
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -18,18 +17,20 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.darwin.physioai.R
+import com.darwin.physioai.databinding.ActivityPosenetBinding
 import com.darwin.physioai.posenet.core.CameraXViewModel
 import com.darwin.physioai.posenet.core.GraphicOverlay
 import com.darwin.physioai.posenet.core.PreferenceUtils
 import com.darwin.physioai.posenet.core.VisionImageProcessor
 import com.google.mlkit.common.MlKitException
 import io.agora.rtc.RtcEngine
-import io.agora.rtc.gdp.EglCore
-import java.util.*
-
+import io.agora.rtc.ss.ScreenSharingClient
+import io.agora.rtc.video.VideoEncoderConfiguration
 
 class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
     AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
+
 
     private var previewView: PreviewView? = null
     private var graphicOverlay: GraphicOverlay? = null
@@ -41,15 +42,10 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     private var selectedModel = POSE_DETECTION
     private var mFacing = CameraSelector.LENS_FACING_BACK
     private var cameraSelector: CameraSelector? = null
+    private var binding : ActivityPosenetBinding? = null
 
-    private lateinit var rep_total: TextView
-    private lateinit var value_total: TextView
-    private lateinit var exName : TextView
-    private lateinit var rep : TextView
     private lateinit var value : TextView
 
-    private var engine: RtcEngine? = null
-    // private var varibalesPose = PoseGraphic.PoseVariables
 
     object Myvariables{
         var angle : String?= null
@@ -59,9 +55,11 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         var rep : String? = null
     }
 
+
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityPosenetBinding.inflate(layoutInflater)
 
         Log.d(TAG, "onCreate")
         Myvariables.angle = intent.getStringExtra("angle")
@@ -77,24 +75,16 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                 savedInstanceState.getInt(STATE_LENS_FACING, CameraSelector.LENS_FACING_BACK)
         }
         cameraSelector = CameraSelector.Builder().requireLensFacing(mFacing).build()
-        setContentView(com.darwin.physioai.R.layout.activity_posenet)
+        setContentView(binding!!.root)
 
-        previewView = findViewById(com.darwin.physioai.R.id.preview_view)
-//        fl_local = findViewById<FrameLayout>(com.darwin.physioai.R.id.frame)
-//        fl_remote = findViewById<FrameLayout>(com.darwin.physioai.R.id.remote_video_view_container2)
 
-//        if (checkSelfPermission(
-//                Manifest.permission.RECORD_AUDIO,
-//                PERMISSION_REQ_ID_RECORD_AUDIO
-//            ) && checkSelfPermission(Manifest.permission.CAMERA, PERMISSION_REQ_ID_CAMERA)
-//        ) {
-//            initializeAndJoinChannel()
-//        }
+        previewView = findViewById(R.id.preview_view)
+
 
         if (previewView == null) {
             Log.d(TAG, "previewView is null")
         }
-        graphicOverlay = findViewById(com.darwin.physioai.R.id.graphic_overlay)
+        graphicOverlay = findViewById(R.id.graphic_overlay)
         if (graphicOverlay == null) {
             Log.d(TAG, "graphicOverlay is null")
         }
@@ -105,21 +95,6 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         val rep_all = intent.getStringExtra("reps")
         val set_all = intent.getStringExtra("sets")
 
-//        try {
-//            engine = RtcEngine.create(
-//                this.applicationContext,
-//                getString(R.string.agora_app_id),
-//                iRtcEngineEventHandler
-//            )
-//        } catch (e: java.lang.Exception) {
-//            e.printStackTrace()
-//                this.onBackPressed()
-//        }
-
-//        varibalesPose.repcountfi.observe(this, {
-//            Log.d("LogTagCount", it.toString())
-//            it.toString();
-//        })
 
         val totalReps = rep_all?.toInt()
         val totalSets = set_all?.toInt()
@@ -143,18 +118,44 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application))
             .get(CameraXViewModel::class.java)
             .processCameraProvider
-            .observe(this, { provider: ProcessCameraProvider? ->
+            .observe(this) { provider: ProcessCameraProvider? ->
                 cameraProvider = provider
                 if (allPermissionsGranted()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         bindAllCameraUseCases()
                     }
                 }
-            })
+            }
 
 
         if (!allPermissionsGranted()) {
             runtimePermissions
+        }
+
+        binding?.apply {
+            val videoencode = VideoEncoderConfiguration().apply {
+                frameRate = 24
+                bitrate = 0
+                dimensions = VideoEncoderConfiguration.VideoDimensions(720, 1080)
+                orientationMode = VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+            }
+            val screenshare = ScreenSharingClient()
+            startShare.setOnClickListener {
+                screenshare.start(
+                    this@PoseNetActivity,
+                    "ff503c93e05d40bb964d6677ecb05d50",
+                    "006ff503c93e05d40bb964d6677ecb05d50IAAn9QGxIiGiR/cjdgTmAn9cv2xtQIAHzHOgUrEQMs+eBViNuxMAAAAAEAD1z9KPrNz0YQEAAQCr3PRh",
+                    "test2",
+                    1,
+                    videoencode
+                )
+            }
+
+            stopShare.setOnClickListener {
+                screenshare.stop(
+                    this@PoseNetActivity
+                )
+            }
         }
     }
     override fun onSaveInstanceState(bundle: Bundle) {
@@ -219,17 +220,6 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         imageProcessor?.run {
             this.stop()
         }
-//        unbindVideoService();
-//        TEXTUREVIEW = null;
-//        /**leaveChannel and Destroy the RtcEngine instance*/
-//        if (ENGINE != null) {
-//            ENGINE.leaveChannel();
-//        }
-//        handler.post(RtcEngine::destroy);
-//        ENGINE = null;
-//        super.onDestroy();
-////        mRtcEngine?.leaveChannel()
-////        RtcEngine.destroy()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -301,28 +291,33 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         analysisUseCase?.setAnalyzer(
             // imageProcessor.processImageProxy will use another thread to run the detection underneath,
             // thus we can just runs the analyzer itself on main thread.
-            ContextCompat.getMainExecutor(this),
-            { imageProxy: ImageProxy ->
-                if (needUpdateGraphicOverlayImageSourceInfo) {
-                    val isImageFlipped = mFacing == CameraSelector.LENS_FACING_FRONT
-                    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                    if (rotationDegrees == 0 || rotationDegrees == 180)
-                    {
-                        graphicOverlay!!.setImageSourceInfo(imageProxy.width, imageProxy.height, isImageFlipped)
-                    }
-                    else {
-                        graphicOverlay!!.setImageSourceInfo(imageProxy.height, imageProxy.width, isImageFlipped)
-                    }
-                    needUpdateGraphicOverlayImageSourceInfo = false
+            ContextCompat.getMainExecutor(this)
+        ) { imageProxy: ImageProxy ->
+            if (needUpdateGraphicOverlayImageSourceInfo) {
+                val isImageFlipped = mFacing == CameraSelector.LENS_FACING_FRONT
+                val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                if (rotationDegrees == 0 || rotationDegrees == 180) {
+                    graphicOverlay!!.setImageSourceInfo(
+                        imageProxy.width,
+                        imageProxy.height,
+                        isImageFlipped
+                    )
+                } else {
+                    graphicOverlay!!.setImageSourceInfo(
+                        imageProxy.height,
+                        imageProxy.width,
+                        isImageFlipped
+                    )
                 }
-                try {
-                    imageProcessor!!.processImageProxy(imageProxy, graphicOverlay)
-                } catch (e: MlKitException) {
-                    Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
-                    Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
+                needUpdateGraphicOverlayImageSourceInfo = false
             }
-        )
+            try {
+                imageProcessor!!.processImageProxy(imageProxy, graphicOverlay)
+            } catch (e: MlKitException) {
+                Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
+                Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
         cameraProvider!!.bindToLifecycle(this, cameraSelector!!, analysisUseCase)
     }
     private val requiredPermissions: Array<String?>
@@ -348,6 +343,8 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         }
         return true
     }
+
+
     private val runtimePermissions: Unit get() {
         val allNeededPermissions: MutableList<String?> = ArrayList()
         for (permission in requiredPermissions) {
@@ -368,7 +365,6 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 
     companion object {
         private const val TAG = "CameraXLivePreview"

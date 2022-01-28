@@ -21,7 +21,6 @@ import com.example.physioai.data.models.profileResponse
 import com.example.physioai.data.network.Resource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonObject
-import com.darwin.physioai.agora.ScreenCaptureActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -79,8 +78,8 @@ class Profile : Fragment(R.layout.profile_fragment) {
         binding?.apply {
             editb.setOnClickListener {
                // Navigation.findNavController(requireView()).navigate(R.id.action_profile_to_edit)
-                val i  = Intent(requireContext(), ScreenCaptureActivity::class.java)
-                startActivity(i)
+//                val i  = Intent(requireContext(), Agora::class.java)
+//                startActivity(i)
             }
         }
     }

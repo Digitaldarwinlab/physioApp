@@ -32,6 +32,7 @@ class Login : Fragment(R.layout.login_fragment_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = LoginFragmentFragmentBinding.bind(view)
         token =  sessionManager.getStringData(Constants.USER_TOKEN).toString()
 

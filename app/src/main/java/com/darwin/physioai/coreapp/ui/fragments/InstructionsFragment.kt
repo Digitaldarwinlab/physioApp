@@ -71,22 +71,22 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
                     is Resource.Success -> {
                         progress.hideProgress()
                         try {
-                            val v = (url + it.value[0].video_path)
-                            binding!!.instr.text = it.value[0].instruction1
-                            binding!!.instr2.text = it.value[0].instruction2
-                            binding!!.videoview1.setVideoPath(v)
-
-                            val mediaController = MediaController(requireContext())
-                            mediaController.setAnchorView(binding!!.videoview1)
-
-                            binding!!.videoview1.setMediaController(mediaController)
-                            binding!!.videoview1.setVideoURI(Uri.parse(v))
-
-                            //for video in loop
-                            binding!!.videoview1.setOnPreparedListener { mp ->
-                                mp.isLooping = true
-                            }
-                            binding!!.videoview1.start()
+//                            val v = (url + it.value[0].video_path)
+//                            binding!!.instr.text = it.value[0].instruction1
+//                            binding!!.instr2.text = it.value[0].instruction2
+//                            binding!!.videoview1.setVideoPath(v)
+//
+//                            val mediaController = MediaController(requireContext())
+//                            mediaController.setAnchorView(binding!!.videoview1)
+//
+//                            binding!!.videoview1.setMediaController(mediaController)
+//                            binding!!.videoview1.setVideoURI(Uri.parse(v))
+//
+//                            //for video in loop
+//                            binding!!.videoview1.setOnPreparedListener { mp ->
+//                                mp.isLooping = true
+//                            }
+//                            binding!!.videoview1.start()
 
                         } catch (e: NullPointerException) {
                             Toast.makeText(
