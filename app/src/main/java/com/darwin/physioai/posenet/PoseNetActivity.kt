@@ -30,8 +30,7 @@ import io.agora.rtc.video.VideoEncoderConfiguration
 
 class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
     AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
-
-
+    
     private var previewView: PreviewView? = null
     private var graphicOverlay: GraphicOverlay? = null
     private var cameraProvider: ProcessCameraProvider? = null
@@ -46,8 +45,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
 
     private lateinit var value : TextView
 
-
-    object Myvariables{
+    object Myvariables {
         var angle : String?= null
         var excercise: String? = null
         var pp_cp_id : String? = null
@@ -127,7 +125,6 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                 }
             }
 
-
         if (!allPermissionsGranted()) {
             runtimePermissions
         }
@@ -144,7 +141,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                 screenshare.start(
                     this@PoseNetActivity,
                     "ff503c93e05d40bb964d6677ecb05d50",
-                    "006ff503c93e05d40bb964d6677ecb05d50IAAn9QGxIiGiR/cjdgTmAn9cv2xtQIAHzHOgUrEQMs+eBViNuxMAAAAAEAD1z9KPrNz0YQEAAQCr3PRh",
+                    "006ff503c93e05d40bb964d6677ecb05d50IABk8zz2/CXKTDtFjsMb4LW+7w938l+SASw2BiA69VUBeFiNuxMAAAAAEAC7nPWLarj3YQEAAQBquPdh",
                     "test2",
                     1,
                     videoencode
@@ -163,6 +160,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         bundle.putString(STATE_SELECTED_MODEL, selectedModel)
         bundle.putInt(STATE_LENS_FACING, mFacing)
     }
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @Synchronized
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
@@ -187,6 +185,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         } else {
             CameraSelector.LENS_FACING_FRONT
         }
+
         val newCameraSelector =
             CameraSelector.Builder().requireLensFacing(newLensFacing).build()
         try {
@@ -197,6 +196,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                 return
             }
         } catch (e: CameraInfoUnavailableException) {
+            Log.d("LogTag", e.toString())
         }
         Toast.makeText(applicationContext, "This device does not have lens with facing: $newLensFacing", Toast.LENGTH_SHORT).show()
     }
