@@ -6,7 +6,9 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.net.NetworkRequest
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,7 @@ import kotlin.properties.Delegates
 
 val TAG = "C-Manager"
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class NetworkUtil(context: Context) : LiveData<Boolean>() {
 
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
@@ -34,6 +37,7 @@ class NetworkUtil(context: Context) : LiveData<Boolean>() {
         postValue(validNetworks.size > 0)
     }
 
+
     override fun onActive() {
         networkCallback = createNetworkCallback()
         val networkRequest = NetworkRequest.Builder()
@@ -42,12 +46,12 @@ class NetworkUtil(context: Context) : LiveData<Boolean>() {
         cm.registerNetworkCallback(networkRequest, networkCallback)
     }
 
+
     override fun onInactive() {
         cm.unregisterNetworkCallback(networkCallback)
     }
 
     private fun createNetworkCallback() = object : ConnectivityManager.NetworkCallback() {
-
         override fun onAvailable(network: Network) {
             val networkCapabilities = cm.getNetworkCapabilities(network)
             val hasInternetCapability = networkCapabilities?.hasCapability(NET_CAPABILITY_INTERNET)

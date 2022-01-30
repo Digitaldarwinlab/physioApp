@@ -45,19 +45,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        networkUtil.observe(this, {
-            if(it == true){
+        networkUtil.observe(this) {
+            if (it == true) {
                 binding?.apply {
                     internetError.root.visibility = View.GONE
                     fragmentContainer.visibility = View.VISIBLE
                 }
-            }else{
+            } else {
                 binding?.apply {
                     internetError.root.visibility = View.VISIBLE
                     fragmentContainer.visibility = View.GONE
                 }
             }
-        })
+        }
         setupViews()
     }
 
