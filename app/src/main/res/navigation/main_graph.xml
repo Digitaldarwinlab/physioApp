@@ -30,9 +30,7 @@
         <action
             android:id="@+id/action_schedule_to_instructionsFragment"
             app:destination="@id/instructionsFragment" />
-        <action
-            android:id="@+id/action_schedule_to_agora"
-            app:destination="@id/agora" />
+
     </fragment>
     <fragment
         android:id="@+id/profile"
@@ -42,9 +40,6 @@
         <action
             android:id="@+id/action_profile_to_edit"
             app:destination="@id/edit" />
-        <action
-            android:id="@+id/action_profile_to_screenCaptureFragment"
-            app:destination="@id/screenCaptureFragment" />
     </fragment>
     <fragment
         android:id="@+id/tutorials"
@@ -74,12 +69,4 @@
         android:name="com.darwin.physioai.coreapp.ui.fragments.InstructionsFragment"
         android:label="instructions_fragment"
         tools:layout="@layout/instructions_fragment" />
-    <activity
-        android:id="@+id/agora"
-        android:name="com.darwin.physioai.agora.Agora"
-        android:label="Agora" />
-    <fragment
-        android:id="@+id/screenCaptureFragment"
-        android:name="com.darwin.physioai.agora.ScreenCaptureFragment"
-        android:label="ScreenCaptureFragment" />
 </navigation>

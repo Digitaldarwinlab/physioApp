@@ -80,6 +80,7 @@ class Home : Fragment(R.layout.home_fragment) {
         getEpisode()
         displayProfile(userid!!)
         initializeYoutubevideo()
+        setupObservable()
 //        binding.apply {
 //            castBut.setOnClickListener {
 //                startActivity(Intent("android.settings.CAST_SETTINGS"));
@@ -100,13 +101,8 @@ class Home : Fragment(R.layout.home_fragment) {
         })
     }
 
-    private fun displayProfile(userid: String) {
-        val jsonobj = JsonObject()
-        parseInt = userid.toInt()
-        Log.d("LogProfileId", parseInt.toString())
-        jsonobj.addProperty("id", parseInt)
+    private fun setupObservable(){
         profileViewModel.apply {
-            getprofileRes(jsonobj)
             ProfileRes.observe(viewLifecycleOwner){
                 when (it) {
                     is Resource.Success -> {
@@ -123,18 +119,53 @@ class Home : Fragment(R.layout.home_fragment) {
                                 putStringData(Constants.PATIENT_NAME, details.first_name)
                             }
 
-//                            val args = Bundle()
-//                            args.putString("name", "${details.first_name} ${details.last_name}")
-//                            args.putString("mobile", details.mobile_no)
-//                            args.putString("landline", details.landline)
-//                            args.putString("email", details.email)
-//                            args.putString("whatsapp", details.whatsapp_no)
-//                            args.putString("pincode", details.pin.toString())
-//                            args.putString("emergency", details.emergence_contact.toString())
-//
-//                            val newFragment = Edit()
-//                            newFragment.arguments = args
+    //                            val args = Bundle()
+    //                            args.putString("name", "${details.first_name} ${details.last_name}")
+    //                            args.putString("mobile", details.mobile_no)
+    //                            args.putString("landline", details.landline)
+    //                            args.putString("email", details.email)
+    //                            args.putString("whatsapp", details.whatsapp_no)
+    //                            args.putString("pincode", details.pin.toString())
+    //                            args.putString("emergency", details.emergence_contact.toString())
+    //
+    //                            val newFragment = Edit()
+    //                            newFragment.arguments = args
 
+                        } catch (e: NullPointerException) {
+                            Toast.makeText(
+                                requireActivity(),
+                                "oops..! Something went wrong.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    is Resource.Failure ->{
+                        progress.hideProgress()
+                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
+                    }
+                    is Resource.Loading ->{
+                        if(progress.mDialog?.isShowing == true){
+                            progress.hideProgress()
+                        }else{
+                            progress.showProgress(requireContext())
+                        }
+                    }
+                }
+            }
+        }
+        viewModel.apply {
+            homeRes.observe(viewLifecycleOwner){
+                when (it) {
+                    is Resource.Success -> {
+                        progress.hideProgress()
+                        try {
+                            if(it.value.isNotEmpty()) {
+                                episodeid = it.value[0].pp_ed_id.toInt().toString()
+                                Log.d("LogTagEpisodeID", episodeid.toString())
+                                sessionManager.apply {
+                                    putStringData(Constants.EPISODE_ID, episodeid.toString())
+                                }
+                            }
                         } catch (e: NullPointerException) {
                             Toast.makeText(
                                 requireActivity(),
@@ -159,47 +190,22 @@ class Home : Fragment(R.layout.home_fragment) {
         }
     }
 
+    private fun displayProfile(userid: String) {
+        val jsonobj = JsonObject()
+        parseInt = userid.toInt()
+        Log.d("LogProfileId", parseInt.toString())
+        jsonobj.addProperty("id", parseInt)
+        profileViewModel.apply {
+            getprofileRes(jsonobj)
+        }
+    }
+
     private fun getEpisode() {
         val jsonobj = JsonObject()
         val parsedInt = userid?.toInt()
         jsonobj.addProperty("id", parsedInt)
         viewModel.apply {
             getUserData(jsonobj)
-            homeRes.observe(viewLifecycleOwner){
-                when (it) {
-                    is Resource.Success -> {
-                        progress.hideProgress()
-                        try {
-                            if(it.value.isNotEmpty()) {
-                            episodeid = it.value[0].pp_ed_id.toInt().toString()
-                            Log.d("LogTagEpisodeID", episodeid.toString())
-                            sessionManager.apply {
-                                putStringData(Constants.EPISODE_ID, episodeid.toString())
-                            }
-                            } else {
-
-                            }
-                        } catch (e: NullPointerException) {
-                            Toast.makeText(
-                                requireActivity(),
-                                "oops..! Something went wrong.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                    is Resource.Failure ->{
-                        progress.hideProgress()
-                        Toast.makeText(requireContext(), "Failed.", Toast.LENGTH_SHORT).show()
-                    }
-                    is Resource.Loading ->{
-                        if(progress.mDialog?.isShowing == true){
-                            progress.hideProgress()
-                        }else{
-                            progress.showProgress(requireContext())
-                        }
-                    }
-                }
-            }
         }
     }
 

@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
-import android.view.SurfaceView
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -16,7 +16,10 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.darwin.physioai.R
 import com.darwin.physioai.databinding.ActivityPosenetBinding
 import com.darwin.physioai.posenet.core.CameraXViewModel
@@ -24,13 +27,14 @@ import com.darwin.physioai.posenet.core.GraphicOverlay
 import com.darwin.physioai.posenet.core.PreferenceUtils
 import com.darwin.physioai.posenet.core.VisionImageProcessor
 import com.google.mlkit.common.MlKitException
-import io.agora.rtc.RtcEngine
 import io.agora.rtc.ss.ScreenSharingClient
 import io.agora.rtc.video.VideoEncoderConfiguration
+import io.agora.rtm.*
+
 
 class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
     AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
-    
+
     private var previewView: PreviewView? = null
     private var graphicOverlay: GraphicOverlay? = null
     private var cameraProvider: ProcessCameraProvider? = null
@@ -42,6 +46,14 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     private var mFacing = CameraSelector.LENS_FACING_BACK
     private var cameraSelector: CameraSelector? = null
     private var binding : ActivityPosenetBinding? = null
+    private var mRtmClient: RtmClient? = null
+    private var mRtmChannel: RtmChannel? = null
+    private var appid = "ff503c93e05d40bb964d6677ecb05d50"
+    private var token = "006ff503c93e05d40bb964d6677ecb05d50IACfIIZBGj8hj6XcdIJ+BLaMs8/8EBmkveg036Dq9oh5GViNuxMAAAAAEAD1z9KPm0gBYgEAAQCZSAFi"
+    private var uid = 1
+    private var channel = "test2"
+    private var screenshare : ScreenSharingClient? = null
+
 
     private lateinit var value : TextView
 
@@ -51,6 +63,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         var pp_cp_id : String? = null
         var time : String? = null
         var rep : String? = null
+        var trigger : String? = "0"
     }
 
 
@@ -82,6 +95,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         if (previewView == null) {
             Log.d(TAG, "previewView is null")
         }
+
         graphicOverlay = findViewById(R.id.graphic_overlay)
         if (graphicOverlay == null) {
             Log.d(TAG, "graphicOverlay is null")
@@ -136,29 +150,165 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                 dimensions = VideoEncoderConfiguration.VideoDimensions(720, 1080)
                 orientationMode = VideoEncoderConfiguration.ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
             }
-            val screenshare = ScreenSharingClient()
+
             startShare.setOnClickListener {
-                screenshare.start(
-                    this@PoseNetActivity,
-                    "ff503c93e05d40bb964d6677ecb05d50",
-                    "006ff503c93e05d40bb964d6677ecb05d50IABk8zz2/CXKTDtFjsMb4LW+7w938l+SASw2BiA69VUBeFiNuxMAAAAAEAC7nPWLarj3YQEAAQBquPdh",
-                    "test2",
-                    1,
-                    videoencode
-                )
+                if (mRtmClient == null){
+                    initiateRTM()
+                    loginRTM()
+                    joinchannel()
+                }
+                if(screenshare == null){
+                    screenshare = ScreenSharingClient()
+                    screenshare?.start(
+                        this@PoseNetActivity,
+                        appid,
+                        token,
+                        channel,
+                        uid,
+                        videoencode
+                    )
+                }else{
+                    Toast.makeText(this@PoseNetActivity, "Session Already Running", Toast.LENGTH_SHORT).show()
+                }
             }
 
             stopShare.setOnClickListener {
-                screenshare.stop(
+                mRtmClient?.logout(null);
+                mRtmChannel?.leave(null);
+                screenshare?.stop(
                     this@PoseNetActivity
                 )
+                screenshare = null
+                mRtmClient = null
+                mRtmChannel = null
             }
         }
+
     }
-    override fun onSaveInstanceState(bundle: Bundle) {
-        super.onSaveInstanceState(bundle)
-        bundle.putString(STATE_SELECTED_MODEL, selectedModel)
-        bundle.putInt(STATE_LENS_FACING, mFacing)
+
+    private fun initiateRTM(){
+        try {
+            mRtmClient = RtmClient.createInstance(baseContext,"08bcd6eabeab4d61bc9258c456d0f2d3", object :
+                RtmClientListener {
+                override fun onConnectionStateChanged(p0: Int, p1: Int) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onMessageReceived(p0: RtmMessage?, p1: String?) {
+                    Log.d("TestLog", p0?.text.toString())
+
+                    Myvariables.trigger = p0?.text.toString()
+
+                    Log.d("TestLog", p1.toString())
+                }
+
+                override fun onImageMessageReceivedFromPeer(
+                    p0: RtmImageMessage?,
+                    p1: String?
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onFileMessageReceivedFromPeer(
+                    p0: RtmFileMessage?,
+                    p1: String?
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onMediaUploadingProgress(
+                    p0: RtmMediaOperationProgress?,
+                    p1: Long
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onMediaDownloadingProgress(
+                    p0: RtmMediaOperationProgress?,
+                    p1: Long
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onTokenExpired() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onPeersOnlineStatusChanged(p0: MutableMap<String, Int>?) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        }catch (e : Exception) {
+            throw  RuntimeException("RTM initialization failed!");
+        }
+    }
+
+    private fun loginRTM(){
+        mRtmClient?.login("08bcd6eabeab4d61bc9258c456d0f2d3", uid.toString(), object : ResultCallback<Void?> {
+            override fun onSuccess(responseInfo: Void?) {
+                Log.d("LogTag", responseInfo.toString())
+            }
+            override fun onFailure(errorInfo: ErrorInfo) {
+                val text: CharSequence =
+                    "User: $uid failed to log in to the RTM system!$errorInfo"
+                val duration = Toast.LENGTH_SHORT
+                Log.d("TestLog", errorInfo.toString())
+                runOnUiThread {
+                    val toast = Toast.makeText(applicationContext, text, duration)
+                    toast.show()
+                }
+            }
+        })
+    }
+
+    private fun joinchannel(){
+        val mRtmChannelListener: RtmChannelListener = object : RtmChannelListener {
+            override fun onMemberCountUpdated(i: Int) {}
+            override fun onAttributesUpdated(list: List<RtmChannelAttribute>) {}
+            override fun onMessageReceived(message: RtmMessage, fromMember: RtmChannelMember) {
+                val text = message.text
+                val fromUser = fromMember.userId
+                val message_text = "Message received from $fromUser : $text\n"
+                Log.d("TestLog", message_text.toString())
+            }
+
+            override fun onImageMessageReceived(
+                rtmImageMessage: RtmImageMessage,
+                rtmChannelMember: RtmChannelMember
+            ) {
+            }
+
+            override fun onFileMessageReceived(
+                rtmFileMessage: RtmFileMessage,
+                rtmChannelMember: RtmChannelMember
+            ) {
+            }
+
+            override fun onMemberJoined(member: RtmChannelMember) {}
+            override fun onMemberLeft(member: RtmChannelMember) {}
+        }
+        try {
+            mRtmChannel = mRtmClient!!.createChannel(channel, mRtmChannelListener)
+        } catch (e: java.lang.RuntimeException) {
+        }
+        mRtmChannel!!.join(object : ResultCallback<Void> {
+            override fun onSuccess(responseInfo: Void?) {}
+            override fun onFailure(errorInfo: ErrorInfo) {
+                val text: CharSequence = "User: $uid failed to join the channel!$errorInfo"
+                val duration = Toast.LENGTH_SHORT
+                runOnUiThread {
+                    val toast = Toast.makeText(applicationContext, text, duration)
+                    toast.show()
+                }
+            }
+        })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putString(STATE_SELECTED_MODEL, selectedModel)
+        outState.putInt(STATE_LENS_FACING, mFacing)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -220,6 +370,23 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         imageProcessor?.run {
             this.stop()
         }
+        if (mRtmClient !=null){
+            mRtmClient?.logout(null);
+        }
+
+        if (mRtmChannel !=null){
+            mRtmChannel?.leave(null);
+        }
+
+        if (screenshare != null){
+            screenshare?.stop(
+                this@PoseNetActivity
+            )
+        }
+
+        screenshare = null
+        mRtmClient = null
+        mRtmChannel = null
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -271,7 +438,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
                     val shouldShowInFrameLikelihood = PreferenceUtils.shouldShowPoseDetectionInFrameLikelihoodLivePreview(this)
                     val visualizeZ = PreferenceUtils.shouldPoseDetectionVisualizeZ(this)
                     val rescaleZ = PreferenceUtils.shouldPoseDetectionRescaleZForVisualization(this)
-                    PoseDetectorProcessor(this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ)
+                    PoseDetectorProcessor(this@PoseNetActivity,this, poseDetectorOptions, shouldShowInFrameLikelihood, visualizeZ, rescaleZ)
                 }
                 else -> throw IllegalStateException("Invalid model name")
             }
@@ -288,10 +455,7 @@ class PoseNetActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         }
         analysisUseCase = builder.build()
         needUpdateGraphicOverlayImageSourceInfo = true
-        analysisUseCase?.setAnalyzer(
-            // imageProcessor.processImageProxy will use another thread to run the detection underneath,
-            // thus we can just runs the analyzer itself on main thread.
-            ContextCompat.getMainExecutor(this)
+        analysisUseCase?.setAnalyzer(ContextCompat.getMainExecutor(this)
         ) { imageProxy: ImageProxy ->
             if (needUpdateGraphicOverlayImageSourceInfo) {
                 val isImageFlipped = mFacing == CameraSelector.LENS_FACING_FRONT

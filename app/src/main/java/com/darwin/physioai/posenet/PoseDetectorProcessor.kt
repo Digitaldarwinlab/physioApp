@@ -3,6 +3,7 @@ package com.darwin.physioai.posenet
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import com.app.mlkit.core.VisionProcessorBase
 import com.darwin.physioai.PoseNet.PoseGraphic
 import com.darwin.physioai.posenet.core.GraphicOverlay
@@ -15,7 +16,14 @@ import com.google.mlkit.vision.pose.PoseDetectorOptionsBase
 
 
 /** A processor to run pose detector.  */
-class PoseDetectorProcessor(private var context: Context, options: PoseDetectorOptionsBase, private val showInFrameLikelihood: Boolean, private val visualizeZ: Boolean, private val rescaleZForVisualization: Boolean) : VisionProcessorBase<Pose>(context) {
+class PoseDetectorProcessor(
+  private var lifecycleOwner: LifecycleOwner,
+  private var context: Context,
+  options: PoseDetectorOptionsBase,
+  private val showInFrameLikelihood: Boolean,
+  private val visualizeZ: Boolean,
+  private val rescaleZForVisualization: Boolean
+) : VisionProcessorBase<Pose>(context) {
 
   private val detector: PoseDetector = PoseDetection.getClient(options)
 
@@ -29,7 +37,7 @@ class PoseDetectorProcessor(private var context: Context, options: PoseDetectorO
   }
   override fun onSuccess(results: Pose, graphicOverlay: GraphicOverlay) =
 
-  graphicOverlay.add(PoseGraphic(graphicOverlay, context, results, showInFrameLikelihood, visualizeZ, rescaleZForVisualization))
+  graphicOverlay.add(PoseGraphic(lifecycleOwner ,graphicOverlay, context, results, showInFrameLikelihood, visualizeZ, rescaleZForVisualization))
 
   override fun onFailure(e: Exception) {
     Log.e(TAG, "Pose detection failed!", e)

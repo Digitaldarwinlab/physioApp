@@ -1,8 +1,10 @@
 package com.darwin.physioai.coreapp.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -18,12 +20,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class MainActivity : AppCompatActivity() {
 
     lateinit var bottomNavigationView: BottomNavigationView
     private var binding : ActivityMainBinding? = null
     private lateinit var navController : NavController
     private lateinit var networkUtil: NetworkUtil
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

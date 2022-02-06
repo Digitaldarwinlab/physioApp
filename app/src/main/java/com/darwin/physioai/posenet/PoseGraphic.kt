@@ -4,9 +4,13 @@ package com.darwin.physioai.PoseNet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.text.TextUtils
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import com.darwin.physioai.posenet.AfterStats
 import com.darwin.physioai.posenet.PoseNetActivity
 import com.darwin.physioai.posenet.core.GraphicOverlay
@@ -21,12 +25,14 @@ import kotlin.math.abs
 import kotlin.math.atan2
 
 /** Draw the detected pose in preview. */
-class PoseGraphic internal constructor(overlay: GraphicOverlay,
-                                       private var context: Context,
-                                       private val pose: Pose,
-                                       private val showInFrameLikelihood: Boolean,
-                                       private val visualizeZ: Boolean,
-                                       private val rescaleZForVisualization: Boolean,
+class PoseGraphic internal constructor(
+  private var lifecycleOwner: LifecycleOwner,
+  overlay: GraphicOverlay,
+  private var context: Context,
+  private val pose: Pose,
+  private val showInFrameLikelihood: Boolean,
+  private val visualizeZ: Boolean,
+  private val rescaleZForVisualization: Boolean,
 ) :
   GraphicOverlay.Graphic(overlay) {
   private val leftPaint: Paint
@@ -38,327 +44,321 @@ class PoseGraphic internal constructor(overlay: GraphicOverlay,
 
   @SuppressLint("SimpleDateFormat")
   override fun draw(canvas: Canvas) {
+
     val landmarks = pose.allPoseLandmarks
     val l = pose.getPoseLandmark(PoseLandmark.LEFT_HEEL)
     if (landmarks.isEmpty()) {
       return
     }
 
-    for (landmark in landmarks) {
-      drawPoint(canvas, landmark, whitePaint)
-      if (visualizeZ && rescaleZForVisualization) {
-        zMin = zMin.coerceAtMost(landmark.position3D.z)
-        zMax = zMax.coerceAtLeast(landmark.position3D.z)
+    if (variable.trigger.toString() == "1"){
+
+      for (landmark in landmarks) {
+        drawPoint(canvas, landmark, whitePaint)
+        if (visualizeZ && rescaleZForVisualization) {
+          zMin = zMin.coerceAtMost(landmark.position3D.z)
+          zMax = zMax.coerceAtLeast(landmark.position3D.z)
+        }
       }
-    }
+
+      val nose = pose.getPoseLandmark(PoseLandmark.NOSE)
+      val leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
+      val rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
+      val shoulx = (leftShoulder!!.position.x + rightShoulder!!.position.x) / 2
+      val shouly = (leftShoulder.position.y + rightShoulder.position.y) / 2
+      canvas.drawCircle(translateX(shoulx), translateY(shouly), DOT_RADIUS, whitePaint)
+      val leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW)
+      val rightElbow = pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW)
+      val leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST)
+      val rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST)
+      val leftHip = pose.getPoseLandmark(PoseLandmark.LEFT_HIP)
+      val rightHip = pose.getPoseLandmark(PoseLandmark.RIGHT_HIP)
+      val leftKnee = pose.getPoseLandmark(PoseLandmark.LEFT_KNEE)
+      val hipx = (leftHip!!.position.x + rightHip!!.position.x) / 2
+      val hipy = (leftHip.position.y + rightHip.position.y) / 2
+      canvas.drawCircle(translateX(hipx), translateY(hipy), DOT_RADIUS, whitePaint)
+      val rightKnee = pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE)
+      val leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE)
+      val rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE)
+      val leftPinky = pose.getPoseLandmark(PoseLandmark.LEFT_PINKY)
+      val rightPinky = pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY)
+      val leftIndex = pose.getPoseLandmark(PoseLandmark.LEFT_INDEX)
+      val rightIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX)
+      val leftThumb = pose.getPoseLandmark(PoseLandmark.LEFT_THUMB)
+      val rightThumb = pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB)
+      val leftHeel = pose.getPoseLandmark(PoseLandmark.LEFT_HEEL)
+      val rightHeel = pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL)
+      val leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
+      val rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
 
 
-    val nose = pose.getPoseLandmark(PoseLandmark.NOSE)
-    val leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
-    val rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
-    val shoulx = (leftShoulder!!.position.x + rightShoulder!!.position.x) / 2
-    val shouly = (leftShoulder.position.y + rightShoulder.position.y) / 2
-    canvas.drawCircle(translateX(shoulx), translateY(shouly), DOT_RADIUS, whitePaint)
-    val leftElbow = pose.getPoseLandmark(PoseLandmark.LEFT_ELBOW)
-    val rightElbow = pose.getPoseLandmark(PoseLandmark.RIGHT_ELBOW)
-    val leftWrist = pose.getPoseLandmark(PoseLandmark.LEFT_WRIST)
-    val rightWrist = pose.getPoseLandmark(PoseLandmark.RIGHT_WRIST)
-    val leftHip = pose.getPoseLandmark(PoseLandmark.LEFT_HIP)
-    val rightHip = pose.getPoseLandmark(PoseLandmark.RIGHT_HIP)
-    val leftKnee = pose.getPoseLandmark(PoseLandmark.LEFT_KNEE)
-    val hipx = (leftHip!!.position.x + rightHip!!.position.x) / 2
-    val hipy = (leftHip.position.y + rightHip.position.y) / 2
-    canvas.drawCircle(translateX(hipx), translateY(hipy), DOT_RADIUS, whitePaint)
-    val rightKnee = pose.getPoseLandmark(PoseLandmark.RIGHT_KNEE)
-    val leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE)
-    val rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE)
-    val leftPinky = pose.getPoseLandmark(PoseLandmark.LEFT_PINKY)
-    val rightPinky = pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY)
-    val leftIndex = pose.getPoseLandmark(PoseLandmark.LEFT_INDEX)
-    val rightIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_INDEX)
-    val leftThumb = pose.getPoseLandmark(PoseLandmark.LEFT_THUMB)
-    val rightThumb = pose.getPoseLandmark(PoseLandmark.RIGHT_THUMB)
-    val leftHeel = pose.getPoseLandmark(PoseLandmark.LEFT_HEEL)
-    val rightHeel = pose.getPoseLandmark(PoseLandmark.RIGHT_HEEL)
-    val leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
-    val rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
+      //Calculating the Angle between two landmarks
+      val righthipangle = getAngle(leftHip, rightHip, rightKnee)
+      ringPaint.getTextBounds("$righthipangle", 0, "$righthipangle".length, bounds)
+      canvas.drawText(
+        "$righthipangle",
+        translateX(rightHip.position.x - (bounds.width() / 4)),
+        translateY(rightHip.position.y),
+        whitePaint
+      )
 
+      val lefthipangle = getAngle(rightHip, leftHip, leftKnee)
+      canvas.drawText(
+        "$lefthipangle",
+        translateX(leftHip.position.x + (bounds.width())),
+        translateY(leftHip.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$lefthipangle", 0, "$lefthipangle".length, bounds)
 
-    //Calculating the Angle between two landmarks
-    val righthipangle = getAngle(leftHip, rightHip, rightKnee)
-    ringPaint.getTextBounds("$righthipangle", 0, "$righthipangle".length, bounds)
-    canvas.drawText(
-      "$righthipangle",
-      translateX(rightHip.position.x - (bounds.width() / 4)),
-      translateY(rightHip.position.y),
-      whitePaint
-    )
+      val rightkneeangle = getAngle(rightHip, rightKnee, rightAnkle)
+      canvas.drawText(
+        "$rightkneeangle",
+        translateX(rightKnee!!.position.x - (bounds.width() / 4)),
+        translateY(rightKnee.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$rightkneeangle", 0, "$rightkneeangle".length, bounds)
 
-    val lefthipangle = getAngle(rightHip, leftHip, leftKnee)
-    canvas.drawText(
-      "$lefthipangle",
-      translateX(leftHip.position.x + (bounds.width())),
-      translateY(leftHip.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$lefthipangle", 0, "$lefthipangle".length, bounds)
+      val leftkneeangle = getAngle(leftHip, leftKnee, leftAnkle)
+      canvas.drawText(
+        "$leftkneeangle",
+        translateX(leftKnee!!.position.x + (bounds.width())),
+        translateY(leftKnee.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$leftkneeangle", 0, "$leftkneeangle".length, bounds)
 
-    val rightkneeangle = getAngle(rightHip, rightKnee, rightAnkle)
-    canvas.drawText(
-      "$rightkneeangle",
-      translateX(rightKnee!!.position.x - (bounds.width() / 4)),
-      translateY(rightKnee.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$rightkneeangle", 0, "$rightkneeangle".length, bounds)
-
-    val leftkneeangle = getAngle(leftHip, leftKnee, leftAnkle)
-    canvas.drawText(
-      "$leftkneeangle",
-      translateX(leftKnee!!.position.x + (bounds.width())),
-      translateY(leftKnee.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$leftkneeangle", 0, "$leftkneeangle".length, bounds)
-
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-    val currentDate = sdf.format(Date())
-    val angle = arrayOf(leftkneeangle)
-    angle25public = leftkneeangle
-    for (elements in angle) {
+      val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+      val currentDate = sdf.format(Date())
+      val angle = arrayOf(leftkneeangle)
+      angle25public = leftkneeangle
+      for (elements in angle) {
 //      drawText(canvas, elements.toString(), 3)
-      Log.i("angle of knee", "$elements    $currentDate")
-      print("$elements   $currentDate")
-    }
-
-
-    val rightelbowangle = getAngle(rightShoulder, rightElbow, rightWrist)
-    canvas.drawText(
-      "$rightelbowangle",
-      translateX(rightElbow!!.position.x - (bounds.width() / 4)),
-      translateY(rightElbow.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$rightelbowangle", 0, "$rightelbowangle".length, bounds)
-    //canvas.drawCircle(translateX(rightElbow.position.x - (bounds.width() / 2)), translateY(rightElbow.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val leftelbowangle = getAngle(leftShoulder, leftElbow, leftWrist)
-    canvas.drawText(
-      "$leftelbowangle",
-      translateX(leftElbow!!.position.x + (bounds.width())),
-      translateY(leftElbow.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$leftelbowangle", 0, "$leftelbowangle".length, bounds)
-    //canvas.drawCircle(translateX(leftElbow.position.x + (bounds.width() / 2)), translateY(leftElbow.position.y), bounds.width().toFloat() - 20.0F, ringPaint)
-
-    val rightAnkleAngle = getAngle(rightKnee, rightAnkle, rightFootIndex)
-    canvas.drawText(
-      "$rightAnkleAngle",
-      translateX(rightAnkle!!.position.x - (bounds.width() / 4)),
-      translateY(rightAnkle.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$rightAnkleAngle", 0, "$rightAnkleAngle".length, bounds)
-    //canvas.drawCircle(translateX(rightAnkle.position.x - (bounds.width() / 2)), translateY(rightAnkle.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val leftAnkleAngle = getAngle(leftKnee, leftAnkle, leftFootIndex)
-    canvas.drawText(
-      "$leftAnkleAngle",
-      translateX(leftAnkle!!.position.x + (bounds.width())),
-      translateY(leftAnkle.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$leftAnkleAngle", 0, "$leftAnkleAngle".length, bounds)
-    //canvas.drawCircle(translateX(leftKnee.position.x + (bounds.width() / 2)), translateY(leftKnee.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val leftwristAngle = getAngle(leftElbow, leftWrist, leftPinky)
-    canvas.drawText(
-      "$leftwristAngle",
-      translateX(leftWrist!!.position.x + (bounds.width())),
-      translateY(leftWrist.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$leftwristAngle", 0, "$leftwristAngle".length, bounds)
-    //canvas.drawCircle(translateX(leftWrist.position.x + (bounds.width() / 2)), translateY(leftWrist.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val rightwristAngle = getAngle(rightElbow, rightWrist, rightPinky)
-    canvas.drawText(
-      "$rightwristAngle",
-      translateX(rightWrist!!.position.x - (bounds.width() / 4)),
-      translateY(rightWrist.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$rightwristAngle", 0, "$rightwristAngle".length, bounds)
-    //canvas.drawCircle(translateX(rightWrist.position.x - (bounds.width() / 2)), translateY(rightWrist.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val rightShoulderAngle = getAngle(rightElbow, rightShoulder, leftShoulder)
-    canvas.drawText(
-      "$rightShoulderAngle",
-      translateX(rightShoulder.position.x - (bounds.width() / 4)),
-      translateY(rightShoulder.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$rightShoulderAngle", 0, "$rightShoulderAngle".length, bounds)
-    //canvas.drawCircle(translateX(rightShoulder.position.x - (bounds.width() / 2)), translateY(rightShoulder.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val leftshoulderAngle = getAngle(leftElbow, leftShoulder, rightShoulder)
-    canvas.drawText(
-      "$leftshoulderAngle",
-      translateX(leftShoulder.position.x + (bounds.width())),
-      translateY(leftShoulder.position.y),
-      whitePaint
-    )
-    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
-
-    Log.d("LogTagLeftElbow", leftshoulderAngle.toString())
-    //canvas.drawCircle(translateX(leftShoulder.position.x + (bounds.width() / 2)), translateY(leftShoulder.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
-
-    val leftneckAngle = getAngleBasedonXY(
-      leftShoulder.position.x,
-      leftShoulder.position.y,
-      shoulx,
-      shouly,
-      nose.position.x,
-      nose.position.y
-    )
-//    canvas.drawText("$leftshoulderAngle", translateX(leftShoulder.position.x + (bounds.width())), translateY(leftShoulder.position.y), whitePaint)
-//    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
-
-    val RightneckAngle = getAngleBasedonXY(
-      rightShoulder.position.x,
-      rightShoulder.position.y,
-      shoulx,
-      shouly,
-      nose.position.x,
-      nose.position.y
-    )
-//    canvas.drawText("$leftshoulderAngle", translateX(leftShoulder.position.x + (bounds.width())), translateY(leftShoulder.position.y), whitePaint)
-//    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
-
-    // Starting Position Logic
-    var keyPointsCount = 0
-
-    for (landmark in landmarks) {
-      if (landmark.inFrameLikelihood < MIN_CONFIDENCE) {
-        continue
+        Log.i("angle of knee", "$elements    $currentDate")
+        print("$elements   $currentDate")
       }
-      keyPointsCount++
-    }
-
-    if (keyPointsCount >= 30) {
-
-      replogic0(lefthipangle.toInt())
-      replogic1(righthipangle.toInt())
-      replogic2(leftshoulderAngle.toInt())
-      replogic3(rightShoulderAngle.toInt())
-      replogic4(leftkneeangle.toInt())
-      replogic5(rightkneeangle.toInt())
-      replogic6(rightelbowangle.toInt())
-      replogic7(leftelbowangle.toInt())
-      replogic8(leftAnkleAngle.toInt())
-      replogic9(rightAnkleAngle.toInt())
-      replogic10(leftwristAngle.toInt())
-      replogic11(rightwristAngle.toInt())
-      replogic12(leftneckAngle.toInt())
-      replogic13(RightneckAngle.toInt())
 
 
-      //tts.speak("Great start Excercise", TextToSpeech.QUEUE_FLUSH, null, null)
-      //Repitition Logic for Squat
+      val rightelbowangle = getAngle(rightShoulder, rightElbow, rightWrist)
+      canvas.drawText(
+        "$rightelbowangle",
+        translateX(rightElbow!!.position.x - (bounds.width() / 4)),
+        translateY(rightElbow.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$rightelbowangle", 0, "$rightelbowangle".length, bounds)
+      //canvas.drawCircle(translateX(rightElbow.position.x - (bounds.width() / 2)), translateY(rightElbow.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val leftelbowangle = getAngle(leftShoulder, leftElbow, leftWrist)
+      canvas.drawText(
+        "$leftelbowangle",
+        translateX(leftElbow!!.position.x + (bounds.width())),
+        translateY(leftElbow.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$leftelbowangle", 0, "$leftelbowangle".length, bounds)
+      //canvas.drawCircle(translateX(leftElbow.position.x + (bounds.width() / 2)), translateY(leftElbow.position.y), bounds.width().toFloat() - 20.0F, ringPaint)
+
+      val rightAnkleAngle = getAngle(rightKnee, rightAnkle, rightFootIndex)
+      canvas.drawText(
+        "$rightAnkleAngle",
+        translateX(rightAnkle!!.position.x - (bounds.width() / 4)),
+        translateY(rightAnkle.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$rightAnkleAngle", 0, "$rightAnkleAngle".length, bounds)
+      //canvas.drawCircle(translateX(rightAnkle.position.x - (bounds.width() / 2)), translateY(rightAnkle.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val leftAnkleAngle = getAngle(leftKnee, leftAnkle, leftFootIndex)
+      canvas.drawText(
+        "$leftAnkleAngle",
+        translateX(leftAnkle!!.position.x + (bounds.width())),
+        translateY(leftAnkle.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$leftAnkleAngle", 0, "$leftAnkleAngle".length, bounds)
+      //canvas.drawCircle(translateX(leftKnee.position.x + (bounds.width() / 2)), translateY(leftKnee.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val leftwristAngle = getAngle(leftElbow, leftWrist, leftPinky)
+      canvas.drawText(
+        "$leftwristAngle",
+        translateX(leftWrist!!.position.x + (bounds.width())),
+        translateY(leftWrist.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$leftwristAngle", 0, "$leftwristAngle".length, bounds)
+      //canvas.drawCircle(translateX(leftWrist.position.x + (bounds.width() / 2)), translateY(leftWrist.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val rightwristAngle = getAngle(rightElbow, rightWrist, rightPinky)
+      canvas.drawText(
+        "$rightwristAngle",
+        translateX(rightWrist!!.position.x - (bounds.width() / 4)),
+        translateY(rightWrist.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$rightwristAngle", 0, "$rightwristAngle".length, bounds)
+      //canvas.drawCircle(translateX(rightWrist.position.x - (bounds.width() / 2)), translateY(rightWrist.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val rightShoulderAngle = getAngle(rightElbow, rightShoulder, leftShoulder)
+      canvas.drawText(
+        "$rightShoulderAngle",
+        translateX(rightShoulder.position.x - (bounds.width() / 4)),
+        translateY(rightShoulder.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$rightShoulderAngle", 0, "$rightShoulderAngle".length, bounds)
+      //canvas.drawCircle(translateX(rightShoulder.position.x - (bounds.width() / 2)), translateY(rightShoulder.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val leftshoulderAngle = getAngle(leftElbow, leftShoulder, rightShoulder)
+      canvas.drawText(
+        "$leftshoulderAngle",
+        translateX(leftShoulder.position.x + (bounds.width())),
+        translateY(leftShoulder.position.y),
+        whitePaint
+      )
+      ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
+
+      Log.d("LogTagLeftElbow", leftshoulderAngle.toString())
+      //canvas.drawCircle(translateX(leftShoulder.position.x + (bounds.width() / 2)), translateY(leftShoulder.position.y), bounds.width().toFloat() - 20.0f, ringPaint)
+
+      val leftneckAngle = getAngleBasedonXY(
+        leftShoulder.position.x,
+        leftShoulder.position.y,
+        shoulx,
+        shouly,
+        nose.position.x,
+        nose.position.y
+      )
+//    canvas.drawText("$leftshoulderAngle", translateX(leftShoulder.position.x + (bounds.width())), translateY(leftShoulder.position.y), whitePaint)
+//    ringPaint.getTextBounds("$leftshoulderAngle", 0, "$leftshoulderAngle".length, bounds)
+
+      val RightneckAngle = getAngleBasedonXY(
+        rightShoulder.position.x,
+        rightShoulder.position.y,
+        shoulx,
+        shouly,
+        nose.position.x,
+        nose.position.y
+      )
+
+      // Starting Position Logic
+      var keyPointsCount = 0
+
+      for (landmark in landmarks) {
+        if (landmark.inFrameLikelihood < MIN_CONFIDENCE) {
+          continue
+        }
+        keyPointsCount++
+      }
+
+      if (keyPointsCount >= 30) {
+
+        replogic0(lefthipangle.toInt())
+        replogic1(righthipangle.toInt())
+        replogic2(leftshoulderAngle.toInt())
+        replogic3(rightShoulderAngle.toInt())
+        replogic4(leftkneeangle.toInt())
+        replogic5(rightkneeangle.toInt())
+        replogic6(rightelbowangle.toInt())
+        replogic7(leftelbowangle.toInt())
+        replogic8(leftAnkleAngle.toInt())
+        replogic9(rightAnkleAngle.toInt())
+        replogic10(leftwristAngle.toInt())
+        replogic11(rightwristAngle.toInt())
+        replogic12(leftneckAngle.toInt())
+        replogic13(RightneckAngle.toInt())
+
+
+        //tts.speak("Great start Excercise", TextToSpeech.QUEUE_FLUSH, null, null)
+        //Repitition Logic for Squat
 //      val count = OnFrame(nose!!)
 //      OnRep(count.toString())
 
 //        if(variable.angle.toString() == "leftknee"){
 //          replogic0(leftkneeangle.toInt())
 //        }
-      drawText(canvas, "Rep Count :$count", 2)
-      //rep logic end
-    } else if (keyPointsCount <= 30) {
-      //tts.speak("Go Back please", TextToSpeech.QUEUE_ADD, null, null)
-    }
+        drawText(canvas, "Rep Count :$count", 2)
+        //rep logic end
+      } else if (keyPointsCount <= 30) {
+        //tts.speak("Go Back please", TextToSpeech.QUEUE_ADD, null, null)
+      }
 
-    if (keyPointsCount <= 30) {
-      //Drawing line on the canvas
-      drawLine(canvas, leftShoulder, rightShoulder, whitePaint)
-      drawLine(canvas, leftHip, rightHip, whitePaint)
-      canvas.drawLine(
-        translateX(shoulx),
-        translateY(shouly),
-        translateX(hipx),
-        translateY(hipy),
-        whitePaint
-      )
-      val nosepoint = nose!!.position
-      canvas.drawLine(
-        translateX(nosepoint.x),
-        translateY(nosepoint.y),
-        translateX(shoulx),
-        translateY(shouly),
-        whitePaint
-      )
-      // Left body
-      drawLine(canvas, leftShoulder, leftHip, whitePaint)
-      drawLine(canvas, leftShoulder, leftElbow, whitePaint)
-      drawLine(canvas, leftElbow, leftWrist, whitePaint)
-      drawLine(canvas, leftHip, leftKnee, whitePaint)
-      drawLine(canvas, leftKnee, leftAnkle, whitePaint)
-      drawLine(canvas, leftWrist, leftThumb!!, whitePaint)
-      drawLine(canvas, leftWrist, leftPinky!!, whitePaint)
-      drawLine(canvas, leftWrist, leftIndex!!, whitePaint)
-      drawLine(canvas, leftAnkle, leftHeel!!, whitePaint)
-      drawLine(canvas, leftHeel, leftFootIndex!!, whitePaint)
-      // Right body
-      drawLine(canvas, rightShoulder, rightHip, whitePaint)
-      drawLine(canvas, rightShoulder, rightElbow, whitePaint)
-      drawLine(canvas, rightElbow, rightWrist, whitePaint)
-      drawLine(canvas, rightHip, rightKnee, whitePaint)
-      drawLine(canvas, rightKnee, rightAnkle, whitePaint)
-      drawLine(canvas, rightWrist, rightThumb!!, whitePaint)
-      drawLine(canvas, rightWrist, rightPinky!!, whitePaint)
-      drawLine(canvas, rightWrist, rightIndex!!, whitePaint)
-      drawLine(canvas, rightAnkle, rightHeel!!, whitePaint)
-      drawLine(canvas, rightHeel, rightFootIndex!!, whitePaint)
-    } else if (keyPointsCount > 30) {
-      drawLine(canvas, leftShoulder, rightShoulder, ringPaint)
-      drawLine(canvas, leftHip, rightHip, ringPaint)
-      canvas.drawLine(
-        translateX(shoulx),
-        translateY(shouly),
-        translateX(hipx),
-        translateY(hipy),
-        ringPaint
-      )
-      val nosepoint = nose!!.position
-      canvas.drawLine(
-        translateX(nosepoint.x),
-        translateY(nosepoint.y),
-        translateX(shoulx),
-        translateY(shouly),
-        ringPaint
-      )
-      // Left body
-      drawLine(canvas, leftShoulder, leftHip, ringPaint)
-      drawLine(canvas, leftShoulder, leftElbow, ringPaint)
-      drawLine(canvas, leftElbow, leftWrist, ringPaint)
-      drawLine(canvas, leftHip, leftKnee, ringPaint)
-      drawLine(canvas, leftKnee, leftAnkle, ringPaint)
-      drawLine(canvas, leftWrist, leftThumb!!, ringPaint)
-      drawLine(canvas, leftWrist, leftPinky!!, ringPaint)
-      drawLine(canvas, leftWrist, leftIndex!!, ringPaint)
-      drawLine(canvas, leftAnkle, leftHeel!!, ringPaint)
-      drawLine(canvas, leftHeel, leftFootIndex!!, ringPaint)
-      // Right body
-      drawLine(canvas, rightShoulder, rightHip, ringPaint)
-      drawLine(canvas, rightShoulder, rightElbow, ringPaint)
-      drawLine(canvas, rightElbow, rightWrist, ringPaint)
-      drawLine(canvas, rightHip, rightKnee, ringPaint)
-      drawLine(canvas, rightKnee, rightAnkle, ringPaint)
-      drawLine(canvas, rightWrist, rightThumb!!, ringPaint)
-      drawLine(canvas, rightWrist, rightPinky!!, ringPaint)
-      drawLine(canvas, rightWrist, rightIndex!!, ringPaint)
-      drawLine(canvas, rightAnkle, rightHeel!!, ringPaint)
-      drawLine(canvas, rightHeel, rightFootIndex!!, ringPaint)
+      if (keyPointsCount <= 30) {
+        drawLine(canvas, leftShoulder, rightShoulder, whitePaint)
+        drawLine(canvas, leftHip, rightHip, whitePaint)
+        canvas.drawLine(translateX(shoulx), translateY(shouly), translateX(hipx), translateY(hipy), whitePaint)
+        val nosepoint = nose!!.position
+        canvas.drawLine(
+          translateX(nosepoint.x),
+          translateY(nosepoint.y),
+          translateX(shoulx),
+          translateY(shouly),
+          whitePaint
+        )
+        // Left body
+        drawLine(canvas, leftShoulder, leftHip, whitePaint)
+        drawLine(canvas, leftShoulder, leftElbow, whitePaint)
+        drawLine(canvas, leftElbow, leftWrist, whitePaint)
+        drawLine(canvas, leftHip, leftKnee, whitePaint)
+        drawLine(canvas, leftKnee, leftAnkle, whitePaint)
+        drawLine(canvas, leftWrist, leftThumb!!, whitePaint)
+        drawLine(canvas, leftWrist, leftPinky!!, whitePaint)
+        drawLine(canvas, leftWrist, leftIndex!!, whitePaint)
+        drawLine(canvas, leftAnkle, leftHeel!!, whitePaint)
+        drawLine(canvas, leftHeel, leftFootIndex!!, whitePaint)
+        // Right body
+        drawLine(canvas, rightShoulder, rightHip, whitePaint)
+        drawLine(canvas, rightShoulder, rightElbow, whitePaint)
+        drawLine(canvas, rightElbow, rightWrist, whitePaint)
+        drawLine(canvas, rightHip, rightKnee, whitePaint)
+        drawLine(canvas, rightKnee, rightAnkle, whitePaint)
+        drawLine(canvas, rightWrist, rightThumb!!, whitePaint)
+        drawLine(canvas, rightWrist, rightPinky!!, whitePaint)
+        drawLine(canvas, rightWrist, rightIndex!!, whitePaint)
+        drawLine(canvas, rightAnkle, rightHeel!!, whitePaint)
+        drawLine(canvas, rightHeel, rightFootIndex!!, whitePaint)
+      } else if (keyPointsCount > 30) {
+        drawLine(canvas, leftShoulder, rightShoulder, ringPaint)
+        drawLine(canvas, leftHip, rightHip, ringPaint)
+        canvas.drawLine(
+          translateX(shoulx),
+          translateY(shouly),
+          translateX(hipx),
+          translateY(hipy),
+          ringPaint
+        )
+        val nosepoint = nose!!.position
+        canvas.drawLine(
+          translateX(nosepoint.x),
+          translateY(nosepoint.y),
+          translateX(shoulx),
+          translateY(shouly),
+          ringPaint
+        )
+        // Left body
+        drawLine(canvas, leftShoulder, leftHip, ringPaint)
+        drawLine(canvas, leftShoulder, leftElbow, ringPaint)
+        drawLine(canvas, leftElbow, leftWrist, ringPaint)
+        drawLine(canvas, leftHip, leftKnee, ringPaint)
+        drawLine(canvas, leftKnee, leftAnkle, ringPaint)
+        drawLine(canvas, leftWrist, leftThumb!!, ringPaint)
+        drawLine(canvas, leftWrist, leftPinky!!, ringPaint)
+        drawLine(canvas, leftWrist, leftIndex!!, ringPaint)
+        drawLine(canvas, leftAnkle, leftHeel!!, ringPaint)
+        drawLine(canvas, leftHeel, leftFootIndex!!, ringPaint)
+        // Right body
+        drawLine(canvas, rightShoulder, rightHip, ringPaint)
+        drawLine(canvas, rightShoulder, rightElbow, ringPaint)
+        drawLine(canvas, rightElbow, rightWrist, ringPaint)
+        drawLine(canvas, rightHip, rightKnee, ringPaint)
+        drawLine(canvas, rightKnee, rightAnkle, ringPaint)
+        drawLine(canvas, rightWrist, rightThumb!!, ringPaint)
+        drawLine(canvas, rightWrist, rightPinky!!, ringPaint)
+        drawLine(canvas, rightWrist, rightIndex!!, ringPaint)
+        drawLine(canvas, rightAnkle, rightHeel!!, ringPaint)
+        drawLine(canvas, rightHeel, rightFootIndex!!, ringPaint)
+      }
     }
   }
 

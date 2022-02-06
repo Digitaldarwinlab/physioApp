@@ -61,6 +61,7 @@ class Tutorials : Fragment(R.layout.tutorials_fragment) {
                     }
 
                     backPressedOnce = true
+
                     lifecycleScope.launch{
                         delay(2000)
                         backPressedOnce = false

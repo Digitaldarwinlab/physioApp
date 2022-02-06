@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.darwin.physioai.R
 
 import com.darwin.physioai.coreapp.ui.MainActivity
@@ -77,7 +78,7 @@ class Profile : Fragment(R.layout.profile_fragment) {
 
         binding?.apply {
             editb.setOnClickListener {
-               // Navigation.findNavController(requireView()).navigate(R.id.action_profile_to_edit)
+                Navigation.findNavController(requireView()).navigate(R.id.action_profile_to_edit)
 //                val i  = Intent(requireContext(), Agora::class.java)
 //                startActivity(i)
             }
