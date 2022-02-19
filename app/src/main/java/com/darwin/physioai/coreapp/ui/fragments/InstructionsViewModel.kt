@@ -22,7 +22,7 @@ class InstructionsViewModel @Inject constructor(private val repository: Instruct
         get() = _instructionsRes
 
     fun getInstructions(exercise: JsonObject) = viewModelScope.launch {
-        Log.d("LogInstructionsViewModel", exercise.toString())
+        Log.d("LogIns", exercise.toString())
         _instructionsRes.value = Resource.Loading
         _instructionsRes.value = repository.getInstructions(exercise)
     }

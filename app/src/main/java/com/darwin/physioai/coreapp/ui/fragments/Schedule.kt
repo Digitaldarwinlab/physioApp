@@ -104,17 +104,11 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
             showPrescription(parseIntEID!!)
             setupDatePickr()
         }
+        setupObservable()
     }
 
-    private fun showVisits(userid: String, strdate: String) {
-        parseInt = userid.toInt()
-        Log.d("LogVisitUID", parseInt.toString())
-        Log.d("LogVisitDate", strdate)
-        val jsonobj = JsonObject()
-        jsonobj.addProperty("id", parseInt)
-        jsonobj.addProperty("date", strdate)
+    fun setupObservable(){
         viewModel.apply {
-            getVisit(jsonobj)
             VisitRes.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
@@ -163,15 +157,6 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                     }
                 }
             }
-        }
-    }
-
-    private fun showPrescription(parseIntEID: Int) {
-        Log.d("LogVisitEID", parseIntEID.toString())
-        val jsonobj = JsonObject()
-        jsonobj.addProperty("id", parseIntEID)
-        viewModel.apply {
-            getPres(jsonobj)
             PresRes.observe(viewLifecycleOwner) {
                 when (it) {
                     is Resource.Success -> {
@@ -208,6 +193,27 @@ class Schedule : Fragment(R.layout.schedule_fragment), TimeSlotAdapter.OnItemCli
                     }
                 }
             }
+        }
+    }
+
+    private fun showVisits(userid: String, strdate: String) {
+        parseInt = userid.toInt()
+        Log.d("LogVisitUID", parseInt.toString())
+        Log.d("LogVisitDate", strdate)
+        val jsonobj = JsonObject()
+        jsonobj.addProperty("id", parseInt)
+        jsonobj.addProperty("date", strdate)
+        viewModel.apply {
+            getVisit(jsonobj)
+        }
+    }
+
+    private fun showPrescription(parseIntEID: Int) {
+        Log.d("LogVisitEID", parseIntEID.toString())
+        val jsonobj = JsonObject()
+        jsonobj.addProperty("id", parseIntEID)
+        viewModel.apply {
+            getPres(jsonobj)
         }
     }
 

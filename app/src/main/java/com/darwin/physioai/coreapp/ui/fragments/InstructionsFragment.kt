@@ -59,13 +59,12 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
                 startActivity(myIntent)
             }
         }
+
+        setupObservable()
     }
 
-    private fun Apicall(exercise: String) {
-        val jsonobj = JsonObject()
-        jsonobj.addProperty("exercise", exercise)
+    private fun setupObservable(){
         viewModel.apply {
-            getInstructions(jsonobj)
             instructionsRes.observe(viewLifecycleOwner){
                 when (it) {
                     is Resource.Success -> {
@@ -109,6 +108,14 @@ class InstructionsFragment : Fragment(R.layout.instructions_fragment) {
                     }
                 }
             }
+        }
+    }
+
+    private fun Apicall(exercise: String) {
+        val jsonobj = JsonObject()
+        jsonobj.addProperty("exercise", exercise)
+        viewModel.apply {
+            getInstructions(jsonobj)
         }
     }
 }

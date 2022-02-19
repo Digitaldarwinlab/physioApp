@@ -51,8 +51,7 @@ class PoseGraphic internal constructor(
       return
     }
 
-    if (variable.trigger.toString() == "1"){
-
+    if (variable.trigger.toString() == "0"){
       for (landmark in landmarks) {
         drawPoint(canvas, landmark, whitePaint)
         if (visualizeZ && rescaleZForVisualization) {
@@ -60,7 +59,6 @@ class PoseGraphic internal constructor(
           zMax = zMax.coerceAtLeast(landmark.position3D.z)
         }
       }
-
       val nose = pose.getPoseLandmark(PoseLandmark.NOSE)
       val leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
       val rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
@@ -361,7 +359,6 @@ class PoseGraphic internal constructor(
       }
     }
   }
-
 
   fun drawText(canvas: Canvas, text: String, line: Int) {
     if (TextUtils.isEmpty(text)) {
@@ -1481,7 +1478,8 @@ class PoseGraphic internal constructor(
   }
 
   private fun calculaterepminmax(repDoneForSelectedExcercise : Int ) {
-    Log.d("LogT"," variable.rep.toString()")
+    Log.d("LogTadadad", variable.rep.toString())
+    Log.d("LogTagmintri", repDoneForSelectedExcercise.toString())
     if (repDoneForSelectedExcercise.toString() == variable.rep.toString()) { //this come from database
       Log.d("LogTestminmX", variable.rep.toString())
       if (flagcount == 0) {
